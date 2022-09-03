@@ -1,4 +1,4 @@
-<h1 align="center"> Hibernate Assessment </h1> <br>
+<h1 align="center"> Hibernate Assignment </h1> <br>
 
 <p align="center">
   Simple Spring Boot application to master Hibernate skills.
@@ -18,7 +18,7 @@ The application can be run locally or in a docker container, the requirements fo
 * [Docker](https://www.docker.com/get-docker)
 
 ## Quick Start
-Make sure you have PostgreSQL database set up on you environment using credentials form __application.properties__
+Make sure you have PostgreSQL database on your environment using credentials form __application.properties__
 or use docker-compose to run dockerized database.
 
 ### Run Dockerized database
