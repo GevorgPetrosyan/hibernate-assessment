@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByCreatedDesc()
+        int i = userRepository.findFirstByOrderByUsernameDesc()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
