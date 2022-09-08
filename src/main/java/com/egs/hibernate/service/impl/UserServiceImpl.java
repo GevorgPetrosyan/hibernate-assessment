@@ -4,19 +4,23 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
+import com.egs.hibernate.response.projection.UserProjection;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -40,11 +44,15 @@ public class UserServiceImpl implements UserService {
                 .map(it -> it + 1L)
                 .orElse(1L);
         final long terminate = i + count;
+        List<Country> countries = countryRepository.findAll();
+
         for (; i < terminate; i++) {
             final String username = "username_" + i;
             try {
+                Optional<Country> country =
+                        countries.stream().filter(c -> c.getId() == ThreadLocalRandom.current().nextLong(1L, 272L)).findFirst();
                 final User user = constructUser(username);
-                final Set<Address> addresses = constructAddresses(user);
+                final Set<Address> addresses = constructAddresses(user, country.orElse(null));
                 final PhoneNumber phoneNumber = constructPhoneNumber(user);
                 user.setPhoneNumbers(Set.of(phoneNumber));
                 user.setAddresses(addresses);
@@ -56,16 +64,21 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAll(users);
     }
 
+    @Override
+    public List<UserProjection> findAll(int page, int size) {
+        return userRepository.findAllUsers(PageRequest.of(page, size));
+    }
+
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
 
-    private Set<Address> constructAddresses(User user) {
+    private Set<Address> constructAddresses(User user, Country country) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
-                        .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
+                        .country(country)
                         .user(user).build()).collect(Collectors.toSet());
     }
 
