@@ -15,6 +15,7 @@ import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,11 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProjectionDto> findAllUsers(int page, int size) throws PaginationSizeException {
+    public List<UserProjectionDto> findAllUsers(int page, int size,String field) throws PaginationSizeException {
         if (size <= 0 || page < 0) {
             throw new PaginationSizeException("size and page should be greater than 0");
         }
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size,Sort.by(field));
         return userRepository.findAllUsers(pageRequest);
     }
 

@@ -7,5 +7,5 @@ import java.util.List;
 public interface UserService {
     void generateUsers(int count);
 
-    List<UserProjectionDto> findAllUsers(int page, int size);
+    List<UserProjectionDto> findAllUsers(int page, int size,String firstName);
 }

@@ -33,7 +33,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been returned successfully")})
     @GetMapping
-    public List<UserProjectionDto> findAll(@RequestParam int page, @RequestParam int size) {
-        return userService.findAllUsers(page, size);
+    public List<UserProjectionDto> findAll(@RequestParam int page, @RequestParam int size,@RequestParam String field) {
+        return userService.findAllUsers(page, size,field);
     }
 }
