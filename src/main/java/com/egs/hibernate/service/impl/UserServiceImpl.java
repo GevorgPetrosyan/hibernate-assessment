@@ -14,6 +14,7 @@ import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,8 +66,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProjection> findAll(int page, int size) {
-        return userRepository.findAllUsers(PageRequest.of(page, size));
+    public List<UserProjection> findAll(int page, int size, String direction, String fieldName) {
+        Sort sort = Sort.by(Sort.DEFAULT_DIRECTION, "id");
+        if (direction.equalsIgnoreCase(Sort.Direction.ASC.name())) {
+            sort = Sort.by(Sort.Direction.ASC, fieldName);
+        } else if (direction.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+            sort = Sort.by(Sort.Direction.DESC, fieldName);
+        }
+        return userRepository.findAllUsers(PageRequest.of(page, size, sort));
     }
 
 

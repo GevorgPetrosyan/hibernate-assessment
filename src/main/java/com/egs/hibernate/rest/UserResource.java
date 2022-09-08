@@ -37,7 +37,11 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users will have been received with pagination")})
     @GetMapping
-    public List<UserProjection> findAll(@RequestParam int page, @RequestParam int size) {
-        return userService.findAll(page, size);
+    public List<UserProjection> findAll(@RequestParam("page") int page,
+                                        @RequestParam("size") int size,
+                                        @RequestParam("direction") String direction,
+                                        @RequestParam("fieldName") String fieldName
+    ) {
+        return userService.findAll(page, size,direction,fieldName);
     }
 }
