@@ -8,6 +8,6 @@ public interface UserService {
 
     void generateUsers(int count);
 
-    List<ProjectionUserDto> findAllUsers(int page, int size);
+    List<ProjectionUserDto> findAllUsers(int page, int size, String direction, String firstName);
 
 }

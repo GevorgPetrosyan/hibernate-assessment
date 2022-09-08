@@ -24,7 +24,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been successfully generated")})
     @PostMapping("generate/{count}")
-    public void initiateCountries(@PathVariable int count){
+    public void initiateCountries(@PathVariable int count) {
         userService.generateUsers(count);
     }
 
@@ -32,8 +32,11 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been successfully generated")})
     @GetMapping
-    public List<ProjectionUserDto> findUsers(@RequestParam int page, @RequestParam int size) {
-        return userService.findAllUsers(page,size);
+    public List<ProjectionUserDto> findUsers(@RequestParam int page,
+                                             @RequestParam int size,
+                                             @RequestParam("direction") String direction,
+                                             @RequestParam("fieldName") String field) {
+        return userService.findAllUsers(page, size, direction, field);
     }
 
 }
