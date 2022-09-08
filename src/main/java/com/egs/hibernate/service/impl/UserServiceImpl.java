@@ -3,7 +3,9 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.egs.hibernate.dto.ProjectionUserDto;
 import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
@@ -11,13 +13,12 @@ import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
         List<User> users = new ArrayList<>();
+        Map<Long, Country> countryMap = new HashMap<>();
+        List<Country> countries = countryRepository.findAll();
+        countries.forEach(country -> countryMap.put(country.getId(), country));
         int i = userRepository.findFirstByOrderByIdDesc()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
@@ -43,7 +47,7 @@ public class UserServiceImpl implements UserService {
             final String username = "username_" + i;
             try {
                 final User user = constructUser(username);
-                final Set<Address> addresses = constructAddresses(user);
+                final Set<Address> addresses = constructAddresses(user, countryMap.get(ThreadLocalRandom.current().nextLong(1L, 272L)));
                 final PhoneNumber phoneNumber = constructPhoneNumber(user);
                 user.setPhoneNumbers(Set.of(phoneNumber));
                 user.setAddresses(addresses);
@@ -55,15 +59,21 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAll(users);
     }
 
+    @Override
+    public List<ProjectionUserDto> findAllUsers(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return userRepository.findAllUsers(pageRequest);
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
 
-    private Set<Address> constructAddresses(User user) {
+    private Set<Address> constructAddresses(User user, Country country) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
-                        .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
+                        .country(country)
                         .user(user).build()).collect(Collectors.toSet());
     }
 
