@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.egs</groupId>
+        <artifactId>hibernate-assignment</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>hibernate-assigment-core</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>hibernate-assigment-core</name>
+
+    <properties>
+        <java.version>11</java.version>
+        <modelMapper.version>3.1.0</modelMapper.version>
+        <i18n.version>1.29</i18n.version>
+        <faker.version>3.10.0</faker.version>
+        <springdoc-openapi.version>1.6.11</springdoc-openapi.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.egs</groupId>
+            <artifactId>hibernate-assigment-data-transfer</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neovisionaries</groupId>
+            <artifactId>nv-i18n</artifactId>
+            <version>${i18n.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.arakelian</groupId>
+            <artifactId>faker</artifactId>
+            <version>${faker.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelMapper.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>
