@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 @Setter
 public class BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "todoSeqGen", sequenceName = "todoSeq", initialValue = 1)
     private Long id;
 
     @Column(name = "created")
