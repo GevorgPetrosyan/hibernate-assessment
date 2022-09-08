@@ -3,19 +3,23 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.egs.hibernate.dto.projection.UserProjectionDto;
 import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.exception.domein.PaginationSizeException;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -29,38 +33,55 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByCreatedDesc()
+        int i = userRepository.findFirstByOrderByIdDesc()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
-                .map(it->++it)
+                .map(it -> ++it)
                 .orElse(0);
         final int terminate = i + count;
+        List<User> users = new ArrayList<>();
+        Map<Long, Country> countryMap = new HashMap<>();
+        List<Country> countries = countryRepository.findAll();
+        countries.forEach(country -> countryMap.put(country.getId(), country));
         for (; i < terminate; i++) {
             final String username = "username_" + i;
             try {
                 final User user = constructUser(username);
-                final Set<Address> addresses = constructAddresses(user);
+                final Set<Address> addresses = constructAddresses(user, countryMap.get(ThreadLocalRandom.current().nextLong(1L, 272L)));
                 final PhoneNumber phoneNumber = constructPhoneNumber(user);
                 user.setPhoneNumbers(Set.of(phoneNumber));
                 user.setAddresses(addresses);
-                userRepository.save(user);
+                users.add(user);
             } catch (final Exception e) {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
+        userRepository.saveAll(users);
     }
+
+    @Override
+    public List<UserProjectionDto> findAllUsers(int page, int size) throws PaginationSizeException {
+        if (size <= 0 || page < 0) {
+            throw new PaginationSizeException("size and page should be greater than 0");
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return userRepository.findAllUsers(pageRequest);
+    }
+
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
-    private Set<Address> constructAddresses(User user) {
+
+    private Set<Address> constructAddresses(User user, Country country) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
-                        .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
+                        .country(country)
                         .user(user).build()).collect(Collectors.toSet());
     }
+
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())
