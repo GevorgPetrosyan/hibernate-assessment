@@ -2,17 +2,15 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
-@Entity(name = "address")
 @NoArgsConstructor
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
+@SequenceGenerator(name = "genSeq",sequenceName = "address_id_seq",allocationSize = 200)
+@Entity(name = "address")
 public class Address extends BaseEntity {
 
     @Column(name = "street")
