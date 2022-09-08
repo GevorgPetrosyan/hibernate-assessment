@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -26,16 +28,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
 
+
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByCreatedDesc()
+        List<User> users = new ArrayList<>();
+        long i = userRepository.findLastUser()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
-                .map(Integer::valueOf)
-                .map(it->++it)
-                .orElse(0);
-        final int terminate = i + count;
+                .map(Long::valueOf)
+                .map(it -> it + 1L)
+                .orElse(1L);
+        final long terminate = i + count;
         for (; i < terminate; i++) {
             final String username = "username_" + i;
             try {
@@ -44,27 +48,32 @@ public class UserServiceImpl implements UserService {
                 final PhoneNumber phoneNumber = constructPhoneNumber(user);
                 user.setPhoneNumbers(Set.of(phoneNumber));
                 user.setAddresses(addresses);
-                userRepository.save(user);
+                users.add(user);
             } catch (final Exception e) {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
+        userRepository.saveAll(users);
     }
+
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
+
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
                         .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
+
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())
                 .lastName(person.getLastName()).username(username)
                 .birthdate(person.getBirthdate().toLocalDate()).build();
     }
+
 }
