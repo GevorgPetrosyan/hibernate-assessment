@@ -6,11 +6,14 @@ import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.model.UserFullResponseModel;
+import com.egs.hibernate.model.UserResponseModel;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +30,33 @@ public class UserServiceImpl implements UserService {
     private final CountryRepository countryRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    /**
+     * Changed propagation from REQUIRES_NEW to REQUIRED
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByCreatedDesc()
-                .map(User::getUsername)
-                .map(it -> it.split("_")[1])
-                .map(Integer::valueOf)
-                .map(it->++it)
-                .orElse(0);
+        /**
+         * The written code takes user entity from db, but in this case we need only username of user
+         */
+//        int i = userRepository.findFirstByOrderByCreatedDesc()
+//                .map(User::getUsername)
+//                .map(it -> it.split("_")[1])
+//                .map(Integer::valueOf)
+//                .map(it->++it)
+//                .orElse(0);
+
+        /**
+         * So I modify this part of code by creating native sql query in UserRepository
+         */
+
+        String userName = userRepository.getUserNameFindFirstByOrderByCreatedDesc();
+        int i = 1;
+        if (userName != null) {
+            String s = userName.split("_")[1];
+            i = Integer.parseInt(s);
+            ++i;
+        }
+
         final int terminate = i + count;
         for (; i < terminate; i++) {
             final String username = "username_" + i;
@@ -51,16 +73,33 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public Page<UserResponseModel> getUserResponseModel(Integer pageNumber, Integer pageSize, String sortBy){
+
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+
+        return userRepository.getUserResponseModel(paging);
+    }
+
+    @Override
+    public Slice<UserFullResponseModel> getUserFullResponseModel(Integer pageNumber, Integer pageSize, String sortBy) {
+
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+
+        return userRepository.getUserFullResponseModel(paging);
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
+
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
                         .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
+
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())

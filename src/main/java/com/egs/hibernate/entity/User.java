@@ -2,10 +2,7 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -16,6 +13,10 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 public class User extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_gen_user")
+    @SequenceGenerator(name = "seq_gen_user", sequenceName = "seq")
+    private Long id;
 
     @Column(name = "username", unique = true)
     private String username;
