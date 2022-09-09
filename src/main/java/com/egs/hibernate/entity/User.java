@@ -2,10 +2,7 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -15,6 +12,7 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
+@SequenceGenerator(name = "my_seq", sequenceName = "user_seq")
 public class User extends BaseEntity {
 
     @Column(name = "username", unique = true)

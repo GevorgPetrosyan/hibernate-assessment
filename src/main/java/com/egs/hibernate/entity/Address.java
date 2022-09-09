@@ -2,10 +2,7 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity(name = "address")
 @NoArgsConstructor
@@ -13,6 +10,7 @@ import javax.persistence.ManyToOne;
 @Setter
 @AllArgsConstructor
 @Builder
+@SequenceGenerator(name = "my_seq", sequenceName = "address_seq")
 public class Address extends BaseEntity {
 
     @Column(name = "street")
