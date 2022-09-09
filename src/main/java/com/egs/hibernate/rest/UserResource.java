@@ -27,20 +27,31 @@ public class UserResource {
     public void initiateCountries(@PathVariable int count){
         userService.generateUsers(count);
     }
+//
+//    @Operation(summary = "Show users")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
+//    @GetMapping
+//    public ResponseEntity<List<UserDTO>> getAllUsers(){
+//        return ResponseEntity.ok(userService.getAllUsers());
+//    }
+//
+//    @Operation(summary = "Show users")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
+//    @GetMapping("{columnName}")
+//    public ResponseEntity<List<UserDTO>> filterUsers(@PathVariable String columnName){
+//        return ResponseEntity.ok(userService.usersFilter(columnName));
+//    }
 
-    @Operation(summary = "Show users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers(){
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
-
-    @Operation(summary = "Show users")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
-    @GetMapping("{columnName}")
-    public ResponseEntity<List<UserDTO>> filterUsers(@PathVariable String columnName){
-        return ResponseEntity.ok(userService.usersFilter(columnName));
+            @ApiResponse(responseCode = "200")})
+    @GetMapping("all")
+    public ResponseEntity<Page<ResponseUser>> getAll(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "200") Integer pageSize,
+            @RequestParam(defaultValue = "username") String sortBy) {
+        Page<ResponseUser> list = userService.getAll(pageNo, pageSize, sortBy);
+        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
     }
 }
