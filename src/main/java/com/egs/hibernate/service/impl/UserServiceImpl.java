@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
-                .map(it->++it)
+                .map(it -> ++it)
                 .orElse(0);
         final int terminate = i + count;
         for (; i < terminate; i++) {
@@ -58,21 +58,49 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers() {
         log.info("Users getAll method works!");
-        Mapper mapper = new Mapper();
         List<User> users = userRepository.findAll();
-        return mapper.maptoDTOList(users, UserDTO.class);
+        Mapper mapper = new Mapper();
+        return mapper.mapToDTOList(users, UserDTO.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDTO> usersFilter(String columnName) {
+        log.info("Users getAll method works!");
+        Mapper mapper = new Mapper();
+        List<User> users;
+        switch (columnName) {
+            case "username":
+                users = userRepository.findByOrderByUsernameAsc();
+                break;
+            case "firstName":
+                users = userRepository.findByOrderByFirstNameAsc();
+                break;
+            case "lastName":
+                users = userRepository.findByOrderByLastNameAsc();
+                break;
+            case "birthdate":
+                users = userRepository.findByOrderByBirthdateAsc();
+                break;
+            default:
+                users = userRepository.findAll();
+                break;
+        }
+        return mapper.mapToDTOList(users, UserDTO.class);
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
+
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
                         .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
+
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())

@@ -7,4 +7,5 @@ import java.util.List;
 public interface UserService {
     void generateUsers(int count);
     List<UserDTO> getAllUsers();
+    List<UserDTO> usersFilter(String columnName);
 }
