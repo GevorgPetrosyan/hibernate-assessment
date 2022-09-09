@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<UserDTO> usersFilter(String columnName) {
-        log.info("Users getAll method works!");
+        log.info("Users filter method works!");
         Mapper mapper = new Mapper();
         List<User> users = new ArrayList<>();
         switch (columnName) {
