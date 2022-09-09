@@ -2,6 +2,7 @@ package com.egs.hibernate.rest;
 
 
 import com.egs.hibernate.response.projection.UserProjection;
+import com.egs.hibernate.response.UsersCountResponse;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,5 +44,14 @@ public class UserResource {
                                         @RequestParam("fieldName") String fieldName
     ) {
         return userService.findAll(page, size,direction,fieldName);
+    }
+
+    @GetMapping("count/{code}")
+
+    @Operation(summary = "Find Users count by Country Code")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users count collecting by country code has successfully done")})
+    public UsersCountResponse findCountByCode(@PathVariable("code")String code) {
+        return userService.findUsersCountByCode(code);
     }
 }

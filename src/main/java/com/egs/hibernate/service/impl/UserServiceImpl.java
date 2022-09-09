@@ -10,6 +10,7 @@ import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.response.projection.UserProjection;
+import com.egs.hibernate.response.UsersCountResponse;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public UsersCountResponse findUsersCountByCode(String code) {
+        Integer allUsersByCountryCode = userRepository.findUsersCountByCountryCode(code);
+       return new UsersCountResponse(code,allUsersByCountryCode);
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
@@ -94,6 +101,6 @@ public class UserServiceImpl implements UserService {
         return User.builder().firstName(person.getFirstName())
                 .lastName(person.getLastName()).username(username)
                 .birthdate(person.getBirthdate().toLocalDate()).build();
-    }
+     }
 
 }
