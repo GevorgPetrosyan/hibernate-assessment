@@ -8,7 +8,9 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.exception.domein.PaginationPageException;
 import com.egs.hibernate.exception.domein.PaginationSizeException;
+import com.egs.hibernate.exception.domein.PaginationSortException;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
@@ -62,14 +64,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProjectionDto> findAllUsers(int page, int size,String field) throws PaginationSizeException {
-        if (size <= 0 || page < 0) {
-            throw new PaginationSizeException("size and page should be greater than 0");
-        }
-        PageRequest pageRequest = PageRequest.of(page, size,Sort.by(field));
+    public List<UserProjectionDto> findAllUsers(int page, int size, String field) throws PaginationSizeException {
+        checkPaginationFieldsAndSort(page, size, field);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(field));
         return userRepository.findAllUsers(pageRequest);
     }
-
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
@@ -88,5 +87,17 @@ public class UserServiceImpl implements UserService {
         return User.builder().firstName(person.getFirstName())
                 .lastName(person.getLastName()).username(username)
                 .birthdate(person.getBirthdate().toLocalDate()).build();
+    }
+
+    void checkPaginationFieldsAndSort(int page, int size, String field) {
+        if (size <= 0) {
+            throw new PaginationSizeException("size should be greater than 0");
+        }
+        if (page < 0) {
+            throw new PaginationPageException("page should be equals or greater than 0");
+        }
+        if (field == null) {
+            throw new PaginationSortException("please choose one correct field for sorting");
+        }
     }
 }
