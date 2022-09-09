@@ -11,4 +11,8 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findFirstByOrderByUsernameDesc();
     List<User> findAll();
+    List<User> findByOrderByUsernameAsc();
+    List<User> findByOrderByFirstNameAsc();
+    List<User> findByOrderByLastNameAsc();
+    List<User> findByOrderByBirthdateAsc();
 }
