@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private final CountryRepository countryRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
         int i = userRepository.findFirstByOrderByCreatedDesc()
                 .map(User::getUsername)
