@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy) {
         UserMapper mapper = new UserMapper();
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending().and(Sort.by(sortBy).descending()));
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
 
         Page<User> all = userRepository.findAll(pageable);
         List<UserDto> userDtos = new ArrayList<>();
