@@ -29,8 +29,10 @@ public class UserResource {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been successfully retrieved")})
-    @GetMapping()
-    public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("{pageSize}/{pageNo}/{sortBy}")
+    public List<UserDto> getAllUsers(@PathVariable Integer pageNo,
+                                     @PathVariable Integer pageSize,
+                                     @PathVariable String sortBy) {
+        return userService.getAllUsers(pageNo, pageSize, sortBy);
     }
 }

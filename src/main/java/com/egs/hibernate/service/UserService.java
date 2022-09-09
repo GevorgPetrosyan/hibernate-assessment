@@ -7,5 +7,5 @@ import java.util.List;
 public interface UserService {
     void generateUsers(int count);
 
-    List<UserDto> getAllUsers();
+    List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy);
 }

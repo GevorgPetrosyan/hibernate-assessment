@@ -13,6 +13,10 @@ import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,10 +60,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy) {
         UserMapper mapper = new UserMapper();
 
-        List<User> all = userRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending().and(Sort.by(sortBy).descending()));
+
+        Page<User> all = userRepository.findAll(pageable);
         List<UserDto> userDtos = new ArrayList<>();
 
         for (User u : all) {
