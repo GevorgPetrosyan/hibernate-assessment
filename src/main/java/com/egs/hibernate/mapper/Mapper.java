@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Mapper {
-
-    public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
+    public <S, T> List<T> mapToDTOList(List<S> source, Class<T> targetClass) {
         ModelMapper mapper = new ModelMapper();
         return source.stream()
                 .map(element -> mapper.map(element, targetClass))
