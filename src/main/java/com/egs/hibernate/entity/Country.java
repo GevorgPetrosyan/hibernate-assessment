@@ -3,11 +3,9 @@ package com.egs.hibernate.entity;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
+@SequenceGenerator(name = "my_seq" , sequenceName = "country_id_seq" , allocationSize = 100)
 @Entity(name = "country")
 @Getter
 @Setter

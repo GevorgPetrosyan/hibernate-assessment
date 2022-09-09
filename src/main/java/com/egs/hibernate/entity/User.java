@@ -1,14 +1,13 @@
 package com.egs.hibernate.entity;
 
+import com.egs.hibernate.utils.DBConstants;
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
+@SequenceGenerator(name = "my_seq" , sequenceName = "user_id_seq" , allocationSize = 100)
 @Entity(name = "users")
 @NoArgsConstructor
 @Getter
@@ -17,16 +16,16 @@ import java.util.Set;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(name = "username", unique = true)
+    @Column(name = DBConstants.COLUMN_USERNAME, unique = true)
     private String username;
 
-    @Column(name = "first_name")
+    @Column(name = DBConstants.COLUMN_FIRSTNAME)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = DBConstants.COLUMN_LASTNAME)
     private String lastName;
 
-    @Column(name = "birthdate")
+    @Column(name = DBConstants.COLUMN_BIRTHDATE)
     private LocalDate birthdate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
