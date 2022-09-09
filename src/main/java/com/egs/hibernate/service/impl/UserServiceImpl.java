@@ -3,6 +3,7 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.egs.hibernate.dto.UserDto;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
@@ -15,6 +16,10 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,5 +96,12 @@ public class UserServiceImpl implements UserService {
     return User.builder().firstName(person.getFirstName())
         .lastName(person.getLastName()).username(username)
         .birthdate(person.getBirthdate().toLocalDate()).build();
+  }
+
+
+  @Override
+  public List<UserDto> findAllUsers(int page, int size, String field) {
+    PageRequest pageRequest = PageRequest.of(page, size, Sort.by(field));
+    return userRepository.findAllUsers(pageRequest);
   }
 }
