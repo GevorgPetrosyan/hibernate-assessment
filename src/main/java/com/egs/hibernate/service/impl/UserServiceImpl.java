@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> usersFilter(String columnName) {
         log.info("Users getAll method works!");
         Mapper mapper = new Mapper();
-        List<User> users;
+        List<User> users = new ArrayList<>();
         switch (columnName) {
             case "username":
                 users = userRepository.findByOrderByUsernameAsc();
@@ -81,9 +82,6 @@ public class UserServiceImpl implements UserService {
                 break;
             case "birthdate":
                 users = userRepository.findByOrderByBirthdateAsc();
-                break;
-            default:
-                users = userRepository.findAll();
                 break;
         }
         return mapper.mapToDTOList(users, UserDTO.class);
