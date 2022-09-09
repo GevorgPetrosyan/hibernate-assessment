@@ -1,11 +1,9 @@
 package com.egs.hibernate.service;
 
 import com.egs.hibernate.dto.UserDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface UserService {
     void generateUsers(int count);
-    List<UserDTO> getAllUsers();
-    List<UserDTO> usersFilter(String columnName);
+    Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName);
 }

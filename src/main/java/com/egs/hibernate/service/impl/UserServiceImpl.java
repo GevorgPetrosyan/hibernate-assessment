@@ -4,14 +4,16 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.dto.UserDTO;
-import com.egs.hibernate.entity.*;
+import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.PhoneNumber;
+import com.egs.hibernate.entity.User;
 import com.egs.hibernate.mapper.Mapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,59 +57,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<UserDTO> getAllUsers() {
-        log.info("Users getAll method works!");
-        List<User> users = userRepository.findAll();
-        Mapper mapper = new Mapper();
-        return mapper.mapToDTOList(users, UserDTO.class);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserDTO> usersFilter(String columnName) {
+    @Transactional
+    public Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName) {
         log.info("Users filter method works!");
-        Mapper mapper = new Mapper();
-        List<User> users = new ArrayList<>();
-        switch (columnName) {
-            case "username":
-                users = userRepository.findByOrderByUsernameAsc();
-                break;
-            case "firstName":
-                users = userRepository.findByOrderByFirstNameAsc();
-                break;
-            case "lastName":
-                users = userRepository.findByOrderByLastNameAsc();
-                break;
-            case "birthdate":
-                users = userRepository.findByOrderByBirthdateAsc();
-                break;
-        }
-        return mapper.mapToDTOList(users, UserDTO.class);
-    }
-
-    @Override
-    public Page<ResponseUser> getAll(Integer pageNo, Integer pageSize, String sortBy) {
         if (pageNo < 1) {
             return new PageImpl<>(new ArrayList<>());
         }
         Pageable paging = PageRequest.of(pageNo - 1,
                 pageSize > 200 ? 200 : pageSize,
-                Sort.by(sortBy));
+                Sort.by(columnName));
+        Mapper mapper = new Mapper();
+        List<User> users = new ArrayList<>();
+        switch (columnName) {
+            case "username":
+                users = userRepository.findByOrderByUsernameAsc(paging);
+                break;
+            case "firstName":
+                users = userRepository.findByOrderByFirstNameAsc(paging);
+                break;
+            case "lastName":
+                users = userRepository.findByOrderByLastNameAsc(paging);
+                break;
+            case "birthdate":
+                users = userRepository.findByOrderByBirthdateAsc(paging);
+                break;
+        }
 
-        List<ResponseUser> pagedResult = userRepository.findAll(paging).stream()
-                .map(Mapper::entityToResponse)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(pagedResult);
+        return new PageImpl<>(mapper.mapToDTOList(users, UserDTO.class));
     }
-//
-//    public Page<User> findAllUsersWithFilter(UserPage userPage, UserSearchCriteria criteria){
-//
-//
-//    }
-
-
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))

@@ -8,10 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user/")
@@ -27,31 +27,15 @@ public class UserResource {
     public void initiateCountries(@PathVariable int count){
         userService.generateUsers(count);
     }
-//
-//    @Operation(summary = "Show users")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
-//    @GetMapping
-//    public ResponseEntity<List<UserDTO>> getAllUsers(){
-//        return ResponseEntity.ok(userService.getAllUsers());
-//    }
-//
-//    @Operation(summary = "Show users")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
-//    @GetMapping("{columnName}")
-//    public ResponseEntity<List<UserDTO>> filterUsers(@PathVariable String columnName){
-//        return ResponseEntity.ok(userService.usersFilter(columnName));
-//    }
 
+    @Operation(summary = "Show users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200")})
-    @GetMapping("all")
-    public ResponseEntity<Page<ResponseUser>> getAll(
+            @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
+    @GetMapping("get")
+    public ResponseEntity<Page<UserDTO>> filterUsers(
             @RequestParam(defaultValue = "1") Integer pageNo,
-            @RequestParam(defaultValue = "200") Integer pageSize,
-            @RequestParam(defaultValue = "username") String sortBy) {
-        Page<ResponseUser> list = userService.getAll(pageNo, pageSize, sortBy);
-        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
+            @RequestParam(defaultValue = "2") Integer pageSize,
+            @RequestParam(defaultValue = "username") String columnName){
+        return ResponseEntity.ok(userService.usersFilter(pageNo, pageSize,columnName));
     }
 }
