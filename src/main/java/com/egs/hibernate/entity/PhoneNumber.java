@@ -2,10 +2,9 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
+@SequenceGenerator(name = "genSeq", sequenceName = "phone_number_id_seq", allocationSize = 500)
 
 @Entity(name = "phone_number")
 @NoArgsConstructor

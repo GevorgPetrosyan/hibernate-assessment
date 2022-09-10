@@ -14,14 +14,19 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
-    private final CountryRepository countryRepository;
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void storeAllCountries() {
-        if (countryRepository.count() == 0) {
-            Arrays.stream(CountryCode.values())
-                    .map(it -> Country.builder().countryCode(it).displayName(it.getName()).build())
-                    .forEach(countryRepository::save);
-        }
+  private final CountryRepository countryRepository;
+
+  @Override
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void storeAllCountries() {
+    if (countryRepository.count() == 0) {
+      Arrays.stream(CountryCode.values())
+              .map(it -> Country
+                      .builder()
+                      .countryCode(it)
+                      .displayName(it.getName())
+                      .build())
+              .forEach(countryRepository::save);
     }
+  }
 }
