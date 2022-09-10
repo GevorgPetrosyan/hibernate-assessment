@@ -3,20 +3,27 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.egs.hibernate.dto.UserDTO;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
+import com.egs.hibernate.rest.model.PaginationCriteria;
 import com.egs.hibernate.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -24,16 +31,18 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-  private final UserRepository userRepository;
-  private final CountryRepository countryRepository;
   @PersistenceContext
   private EntityManager entityManager;
+  private final UserRepository userRepository;
+  private final CountryRepository countryRepository;
+  private final ModelMapper mapper;
   @Value("${make.flush.indicator.number}")
   private int flushNumber;
 
-  public UserServiceImpl(UserRepository userRepository, CountryRepository countryRepository) {
+  public UserServiceImpl(UserRepository userRepository, CountryRepository countryRepository, ModelMapper mapper) {
     this.userRepository = userRepository;
     this.countryRepository = countryRepository;
+    this.mapper = mapper;
   }
 
   @Override
@@ -60,6 +69,20 @@ public class UserServiceImpl implements UserService {
         log.warn("User with username: {} can't be created. {}", username, e.getMessage());
       }
     }
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<UserDTO> findAll(PaginationCriteria paginationCriteria) {
+    log.info("Attempt to produce users, data size: {}", paginationCriteria.getSize());
+    Pageable pageable = PageRequest.of(
+            paginationCriteria.getPage(),
+            paginationCriteria.getSize(),
+            Sort.by(paginationCriteria.getSortDirection(),
+                    paginationCriteria.getPropertiesForSort().toArray(new String[0])));
+    return userRepository.findAll(pageable).stream()
+            .map(user -> mapper.map(user, UserDTO.class))
+            .collect(Collectors.toList());
   }
 
   private static PhoneNumber constructPhoneNumber(User user) {

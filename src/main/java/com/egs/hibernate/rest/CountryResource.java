@@ -18,7 +18,6 @@ public class CountryResource {
     private final CountryService countryServiceImpl;
 
     @PostMapping("init")
-
     @Operation(summary = "Initialize countries")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Countries initialization is successfully done")})

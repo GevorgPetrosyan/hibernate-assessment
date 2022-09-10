@@ -11,11 +11,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @Setter
 public class BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genSeq")
     private Long id;

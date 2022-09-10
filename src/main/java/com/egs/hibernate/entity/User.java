@@ -6,13 +6,13 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
+@SequenceGenerator(name = "genSeq", sequenceName = "user_id_seq", allocationSize = 500)
+@Entity(name = "users")
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-@SequenceGenerator(name = "genSeq", sequenceName = "users_id_seq",allocationSize = 200)
-@Entity(name = "users")
 public class User extends BaseEntity {
 
     @Column(name = "username", unique = true)

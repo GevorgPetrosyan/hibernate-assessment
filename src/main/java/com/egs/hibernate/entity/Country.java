@@ -5,13 +5,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@SequenceGenerator(name = "genSeq", sequenceName = "country_id_seq", allocationSize = 500)
+@Entity(name = "country")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(name = "genSeq", sequenceName = "country_id_seq",allocationSize = 200)
-@Entity(name = "country")
 public class Country extends BaseEntity {
 
     @Column(name = "display_name")
