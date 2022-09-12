@@ -15,6 +15,10 @@
     <description>Hibernate Assignment</description>
     <properties>
         <java.version>11</java.version>
+        <com.neovisionaries.version>1.29</com.neovisionaries.version>
+        <com.arakelian.version>3.10.0</com.arakelian.version>
+        <spring.openapi.version>1.6.11</spring.openapi.version>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
     </properties>
     <dependencies>
         <dependency>
@@ -53,25 +57,25 @@
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-i18n</artifactId>
-            <version>1.29</version>
+            <version>${com.neovisionaries.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.arakelian</groupId>
             <artifactId>faker</artifactId>
-            <version>3.10.0</version>
+            <version>${com.arakelian.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.11</version>
+            <version>${spring.openapi.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.1.0</version>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
         </dependency>
     </dependencies>
 
@@ -88,6 +92,27 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

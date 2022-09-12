@@ -16,6 +16,6 @@ public class PaginationCriteria {
   @Min(value = 1, message = "Please input size that bigger or equal 1")
   private int size;
   @ValidPropertiesForSort(message = "Please input valid propertyForSort")
-  private List<String> propertiesForSort;
+  private List<String> propertiesForSort = List.of("username");
   private Direction sortDirection = ASC;
 }

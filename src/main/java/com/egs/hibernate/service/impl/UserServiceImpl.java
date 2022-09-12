@@ -7,12 +7,12 @@ import com.egs.hibernate.dto.UserDTO;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.mapper.UserMapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.rest.model.PaginationCriteria;
 import com.egs.hibernate.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,14 +35,14 @@ public class UserServiceImpl implements UserService {
   private EntityManager entityManager;
   private final UserRepository userRepository;
   private final CountryRepository countryRepository;
-  private final ModelMapper mapper;
+  private final UserMapper userMapper;
   @Value("${make.flush.indicator.number}")
   private int flushNumber;
 
-  public UserServiceImpl(UserRepository userRepository, CountryRepository countryRepository, ModelMapper mapper) {
+  public UserServiceImpl(UserRepository userRepository, CountryRepository countryRepository, UserMapper userMapper) {
     this.userRepository = userRepository;
     this.countryRepository = countryRepository;
-    this.mapper = mapper;
+    this.userMapper = userMapper;
   }
 
   @Override
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
             Sort.by(paginationCriteria.getSortDirection(),
                     paginationCriteria.getPropertiesForSort().toArray(new String[0])));
     return userRepository.findAll(pageable).stream()
-            .map(user -> mapper.map(user, UserDTO.class))
+            .map(userMapper::entityToDTO)
             .collect(Collectors.toList());
   }
 
