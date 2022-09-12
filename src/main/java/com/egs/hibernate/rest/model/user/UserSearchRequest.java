@@ -1,10 +1,9 @@
-package com.egs.hibernate.rest.model;
+package com.egs.hibernate.rest.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 

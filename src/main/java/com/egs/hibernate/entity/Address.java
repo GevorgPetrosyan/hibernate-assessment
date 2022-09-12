@@ -1,6 +1,7 @@
 package com.egs.hibernate.entity;
 
 import lombok.*;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import javax.persistence.*;
 

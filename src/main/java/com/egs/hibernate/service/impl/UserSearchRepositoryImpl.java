@@ -1,9 +1,10 @@
 package com.egs.hibernate.service.impl;
 
 import com.egs.hibernate.entity.User;
-import com.egs.hibernate.rest.model.UserSearchRequest;
+import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserSearchRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.graph.GraphSemantic;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,6 +62,8 @@ public class UserSearchRepositoryImpl implements UserSearchRepository {
         userCriteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
         return entityManager.createQuery(userCriteriaQuery).
+                setHint(GraphSemantic.LOAD.getJpaHintName(),
+                        entityManager.getEntityGraph("withAddressesAndPhoneNumbers")).
                 setFirstResult((pageNumber - 1) * pageSize).
                 setMaxResults(pageSize).getResultList();
     }

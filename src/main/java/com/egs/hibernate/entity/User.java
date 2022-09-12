@@ -5,9 +5,19 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
-@SequenceGenerator(name = "my_seq" , sequenceName = "user_id_seq" , allocationSize = 100)
+@NamedEntityGraph(name = "withAddressesAndPhoneNumbers",
+        attributeNodes = {
+                @NamedAttributeNode("phoneNumbers"),
+                @NamedAttributeNode(value = "addresses", subgraph = "countries")
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "countries", attributeNodes = @NamedAttributeNode("country"))
+        }
+)
+@SequenceGenerator(name = "my_seq", sequenceName = "user_id_seq", allocationSize = 100)
 @Entity(name = "users")
 @NoArgsConstructor
 @Getter
@@ -28,10 +38,10 @@ public class User extends BaseEntity {
     @Column(name = DBConstants.COLUMN_BIRTHDATE)
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<PhoneNumber> phoneNumbers;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<PhoneNumber> phoneNumbers = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Address> addresses;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Address> addresses = new HashSet<>();
 
 }

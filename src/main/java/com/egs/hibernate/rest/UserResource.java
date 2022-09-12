@@ -1,8 +1,8 @@
 package com.egs.hibernate.rest;
 
 
-import com.egs.hibernate.rest.model.UserResponse;
-import com.egs.hibernate.rest.model.UserSearchRequest;
+import com.egs.hibernate.rest.model.user.UserResponse;
+import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

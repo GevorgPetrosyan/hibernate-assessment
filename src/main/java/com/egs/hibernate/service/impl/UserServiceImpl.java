@@ -8,8 +8,10 @@ import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
-import com.egs.hibernate.rest.model.UserResponse;
-import com.egs.hibernate.rest.model.UserSearchRequest;
+import com.egs.hibernate.rest.model.address.AddressResponse;
+import com.egs.hibernate.rest.model.phone_number.PhoneNumberResponse;
+import com.egs.hibernate.rest.model.user.UserResponse;
+import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserService;
 import com.egs.hibernate.utils.DBConstants;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -90,13 +89,43 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse convertUserToUserResponse(User user) {
+
         final UserResponse userResponse = new UserResponse();
 
         userResponse.setUsername(user.getUsername());
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
         userResponse.setBirthdate(user.getBirthdate());
+        userResponse.setAddresses(user.getAddresses()
+                .stream()
+                .map(this::convertAddressToAddressResponse)
+                .collect(Collectors.toSet()));
+        userResponse.setPhoneNumbers(user.getPhoneNumbers()
+                .stream()
+                .map(this::convertPhoneNumberToPhoneNumberResponse)
+                .collect(Collectors.toSet()));
+
         return userResponse;
+    }
+
+    private AddressResponse convertAddressToAddressResponse(final Address address) {
+        final AddressResponse response = new AddressResponse();
+
+        response.setCity(address.getCity());
+        response.setStreet(address.getStreet());
+        response.setPostalCode(address.getPostalCode());
+        response.setAddressLine1(address.getAddressLine1());
+        response.setAddressLine2(address.getAddressLine2());
+
+        return response;
+    }
+
+    private PhoneNumberResponse convertPhoneNumberToPhoneNumberResponse(final PhoneNumber phoneNumber) {
+        final PhoneNumberResponse response = new PhoneNumberResponse();
+
+        response.setPhoneNumber(phoneNumber.getPhoneNumber());
+
+        return response;
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
