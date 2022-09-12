@@ -1,5 +1,6 @@
 package com.egs.hibernate.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,10 +28,12 @@ public class User extends BaseEntity {
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Address> addresses;
 
 }

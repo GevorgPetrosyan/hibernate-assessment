@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName) {
         log.info("Users filter method works!");
         if (pageNo < 1) {
