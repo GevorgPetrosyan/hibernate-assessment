@@ -34,12 +34,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByUsernameDesc()
-                .map(User::getUsername)
+        int i = userRepository.findUserByMaxID()
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
                 .map(it -> ++it)
-                .orElse(0);
+                .orElse(1);
         final int terminate = i + count;
         for (; i < terminate; i++) {
             final String username = "username_" + i;
