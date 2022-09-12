@@ -31,7 +31,7 @@ public class UserResource {
     @Operation(summary = "Show users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
-    @GetMapping("get")
+    @GetMapping
     public ResponseEntity<Page<UserDTO>> filterUsers(
             @RequestParam(defaultValue = "1") Integer pageNo,
             @RequestParam(defaultValue = "50") Integer pageSize,
