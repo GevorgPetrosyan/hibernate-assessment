@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
                 .map(it -> ++it)
-                .orElse(1);
+                .orElse(0);
         final int terminate = i + count;
         for (; i < terminate; i++) {
             final String username = "username_" + i;
@@ -59,12 +59,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName) {
         log.info("Users filter method works!");
-        if (pageNo < 1) {
-            return new PageImpl<>(new ArrayList<>());
-        }
-        Pageable paging = PageRequest.of(pageNo - 1,
-                pageSize > 200 ? 200 : pageSize,
-                Sort.by(columnName));
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(columnName));
         Mapper mapper = new Mapper();
         List<User> users = new ArrayList<>();
         switch (columnName) {

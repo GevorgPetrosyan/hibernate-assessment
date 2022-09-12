@@ -33,9 +33,9 @@ public class UserResource {
             @ApiResponse(responseCode = "200", description = "Users list have been successfully shown")})
     @GetMapping
     public ResponseEntity<Page<UserDTO>> filterUsers(
-            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "50") Integer pageSize,
-            @RequestParam(defaultValue = "username") String columnName){
+            @RequestParam(defaultValue = "firstName") String columnName){
         return ResponseEntity.ok(userService.usersFilter(pageNo, pageSize,columnName));
     }
 }
