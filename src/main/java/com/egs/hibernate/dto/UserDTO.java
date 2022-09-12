@@ -19,7 +19,7 @@ public class UserDTO {
 
     private LocalDate birthdate;
 
-    private Set<PhoneNumber> phone_numbers;
+    private Set<PhoneNumber> phoneNumbers;
 
     private Set<Address> addresses;
 }
