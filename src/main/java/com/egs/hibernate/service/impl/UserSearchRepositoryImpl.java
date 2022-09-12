@@ -5,6 +5,7 @@ import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserSearchRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.graph.GraphSemantic;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,6 +34,7 @@ public class UserSearchRepositoryImpl implements UserSearchRepository {
     private EntityManager entityManager;
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> search(UserSearchRequest request) {
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

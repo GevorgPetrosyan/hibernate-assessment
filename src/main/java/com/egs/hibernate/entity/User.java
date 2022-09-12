@@ -39,9 +39,9 @@ public class User extends BaseEntity {
     private LocalDate birthdate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<PhoneNumber> phoneNumbers = new HashSet<>();
+    private Set<PhoneNumber> phoneNumbers;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Address> addresses = new HashSet<>();
+    private Set<Address> addresses;
 
 }

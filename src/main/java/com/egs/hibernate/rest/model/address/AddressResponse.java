@@ -1,6 +1,7 @@
 package com.egs.hibernate.rest.model.address;
 
 import com.egs.hibernate.entity.Country;
+import com.egs.hibernate.rest.model.country.CountryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,6 @@ public class AddressResponse {
     private String addressLine2;
     private String city;
     private String postalCode;
-//    private Country country;
+    private CountryResponse country;
 
 }

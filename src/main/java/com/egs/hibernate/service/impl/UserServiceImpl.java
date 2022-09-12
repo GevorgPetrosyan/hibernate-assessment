@@ -4,11 +4,13 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.rest.model.address.AddressResponse;
+import com.egs.hibernate.rest.model.country.CountryResponse;
 import com.egs.hibernate.rest.model.phone_number.PhoneNumberResponse;
 import com.egs.hibernate.rest.model.user.UserResponse;
 import com.egs.hibernate.rest.model.user.UserSearchRequest;
@@ -116,6 +118,7 @@ public class UserServiceImpl implements UserService {
         response.setPostalCode(address.getPostalCode());
         response.setAddressLine1(address.getAddressLine1());
         response.setAddressLine2(address.getAddressLine2());
+        response.setCountry(convertCountryToCountryResponse(address.getCountry()));
 
         return response;
     }
@@ -124,6 +127,15 @@ public class UserServiceImpl implements UserService {
         final PhoneNumberResponse response = new PhoneNumberResponse();
 
         response.setPhoneNumber(phoneNumber.getPhoneNumber());
+
+        return response;
+    }
+
+    private CountryResponse convertCountryToCountryResponse(final Country country) {
+        final CountryResponse response = new CountryResponse();
+
+        response.setCountryCode(country.getCountryCode().getName());
+        response.setDisplayName(country.getDisplayName());
 
         return response;
     }
