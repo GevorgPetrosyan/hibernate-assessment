@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@SequenceGenerator(name="default_gen",sequenceName = "country_id_seq",allocationSize=500)
 @Entity(name = "country")
 @Getter
 @Setter
