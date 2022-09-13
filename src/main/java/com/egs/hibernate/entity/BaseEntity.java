@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Column(name = "created")
     @CreatedDate

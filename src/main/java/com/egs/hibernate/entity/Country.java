@@ -3,10 +3,7 @@ package com.egs.hibernate.entity;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Entity(name = "country")
 @Getter
@@ -15,6 +12,17 @@ import javax.persistence.Enumerated;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Country extends BaseEntity {
+
+    /**
+     * using sequence-based id generation instead of auto
+     */
+    @Id
+    @GeneratedValue(generator = "country_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "country_seq",
+            sequenceName = "country_seq"
+    )
+    private Long id;
 
     @Column(name = "display_name")
     private String displayName;

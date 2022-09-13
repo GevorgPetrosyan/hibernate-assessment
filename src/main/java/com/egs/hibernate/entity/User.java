@@ -2,10 +2,7 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -16,6 +13,17 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 public class User extends BaseEntity {
+
+    /**
+     * using sequence-based id generation instead of auto
+     */
+    @Id
+    @GeneratedValue(generator = "user_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "user_seq",
+            sequenceName = "user_seq"
+    )
+    private Long id;
 
     @Column(name = "username", unique = true)
     private String username;
@@ -29,10 +37,10 @@ public class User extends BaseEntity {
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses;
 
 }

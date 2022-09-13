@@ -2,10 +2,7 @@ package com.egs.hibernate.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity(name = "address")
 @NoArgsConstructor
@@ -14,6 +11,17 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Builder
 public class Address extends BaseEntity {
+
+    /**
+     * using sequence-based id generation instead of auto
+     */
+    @Id
+    @GeneratedValue(generator = "address_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "address_seq",
+            sequenceName = "address_seq"
+    )
+    private Long id;
 
     @Column(name = "street")
     private String street;
@@ -30,7 +38,7 @@ public class Address extends BaseEntity {
     @Column(name = "postal_code", length = 6)
     private String postalCode;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     private Country country;
 
