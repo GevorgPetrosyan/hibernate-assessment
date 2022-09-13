@@ -2,6 +2,7 @@ package com.egs.hibernate.entity;
 
 import com.egs.hibernate.utils.DBConstants;
 import com.egs.hibernate.utils.EntityGraphsNames;
+import com.egs.hibernate.utils.SequenceGeneratorNames;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,8 +20,10 @@ import java.util.Set;
                         attributeNodes = @NamedAttributeNode(EntityGraphsNames.SUB_ATTRIBUTE_NODE_COUNTRY))
         }
 )
-@SequenceGenerator(name = "my_seq", sequenceName = "user_id_seq", allocationSize = 100)
-@Entity(name = "users")
+@SequenceGenerator(name = SequenceGeneratorNames.GENERATOR_NAME,
+        sequenceName = SequenceGeneratorNames.USER_SEQUENCE_NAME,
+        allocationSize = DBConstants.ALLOCATION_SIZE)
+@Entity(name = DBConstants.ENTITY_USER_NAME)
 @NoArgsConstructor
 @Getter
 @Setter
@@ -40,10 +43,12 @@ public class User extends BaseEntity {
     @Column(name = DBConstants.COLUMN_BIRTHDATE)
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = DBConstants.MAPPED_FIELD_NAME,
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = DBConstants.MAPPED_FIELD_NAME,
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses;
 
 }

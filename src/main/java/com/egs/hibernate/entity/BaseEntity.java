@@ -1,6 +1,7 @@
 package com.egs.hibernate.entity;
 
 import com.egs.hibernate.utils.DBConstants;
+import com.egs.hibernate.utils.SequenceGeneratorNames;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,9 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = SequenceGeneratorNames.GENERATOR_NAME)
+    @Column(name = DBConstants.COLUMN_ID)
     private Long id;
 
     @Column(name = DBConstants.COLUMN_DATE_CREATED)

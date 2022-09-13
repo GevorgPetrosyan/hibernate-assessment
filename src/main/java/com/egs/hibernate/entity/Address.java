@@ -1,12 +1,15 @@
 package com.egs.hibernate.entity;
 
+import com.egs.hibernate.utils.DBConstants;
+import com.egs.hibernate.utils.SequenceGeneratorNames;
 import lombok.*;
-import org.springframework.data.jpa.repository.EntityGraph;
 
 import javax.persistence.*;
 
-@SequenceGenerator(name = "my_seq" , sequenceName = "address_id_seq" , allocationSize = 100)
-@Entity(name = "address")
+@SequenceGenerator(name = SequenceGeneratorNames.GENERATOR_NAME,
+        sequenceName = SequenceGeneratorNames.ADDRESS_SEQUENCE_NAME,
+        allocationSize = DBConstants.ALLOCATION_SIZE)
+@Entity(name = DBConstants.ENTITY_ADDRESS_NAME)
 @NoArgsConstructor
 @Getter
 @Setter
@@ -14,26 +17,27 @@ import javax.persistence.*;
 @Builder
 public class Address extends BaseEntity {
 
-    @Column(name = "street")
+    @Column(name = DBConstants.COLUMN_STREET)
     private String street;
 
-    @Column(name = "address_line_1")
+    @Column(name = DBConstants.COLUMN_ADDRESS_LINE_1)
     private String addressLine1;
 
-    @Column(name = "address_line_2")
+    @Column(name = DBConstants.COLUMN_ADDRESS_LINE_2)
     private String addressLine2;
 
-    @Column(name = "city")
+    @Column(name = DBConstants.COLUMN_CITY)
     private String city;
 
-    @Column(name = "postal_code", length = 6)
+    @Column(name = DBConstants.COLUMN_POSTAL_CODE,
+            length = DBConstants.COLUMN_POSTAL_CODE_LENGTH)
     private String postalCode;
 
     @ManyToOne
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = DBConstants.COLUMN_COUNTRY_ID)
     private Country country;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = DBConstants.COLUMN_USER_ID)
     private User user;
 }

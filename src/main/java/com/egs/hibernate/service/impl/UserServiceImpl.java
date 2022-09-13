@@ -38,9 +38,9 @@ public class UserServiceImpl implements UserService {
     private static final int DEFAULT_PAGE_NO = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final int DEFAULT_MAX_PAGE_SIZE = 100;
-    private static final String DEFAULT_COLUMN = "id";
-    public static final String DEFAULT_SORT = "ASC";
     private static final String DESC_SORT = "DESC";
+
+    public static final String DEFAULT_SORT = "ASC";
 
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void generateUsers(final int count) {
 
-        final long start = System.currentTimeMillis();
         int i = userRepository.findFirstUsernameByMaxId()
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
@@ -70,9 +69,6 @@ public class UserServiceImpl implements UserService {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
-
-        final long end = System.currentTimeMillis();
-        System.out.println((end - start) / 1000 + " seconds.");
     }
 
     @Override
@@ -213,6 +209,6 @@ public class UserServiceImpl implements UserService {
         } else if (column.equalsIgnoreCase(DBConstants.COLUMN_BIRTHDATE)) {
             return DBConstants.COLUMN_BIRTHDATE;
         }
-        return DEFAULT_COLUMN;
+        return DBConstants.COLUMN_ID;
     }
 }
