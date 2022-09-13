@@ -3,6 +3,7 @@ package com.egs.hibernate.service.impl;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserSearchRepository;
+import com.egs.hibernate.utils.EntityGraphsNames;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.graph.GraphSemantic;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +69,7 @@ public class UserSearchRepositoryImpl implements UserSearchRepository {
 
         return entityManager.createQuery(userCriteriaQuery).
                 setHint(GraphSemantic.LOAD.getJpaHintName(),
-                        entityManager.getEntityGraph("withAddressesAndPhoneNumbers")).
+                        entityManager.getEntityGraph(EntityGraphsNames.NAMED_ENTITY_GRAPH)).
                 setFirstResult((pageNumber - 1) * pageSize).
                 setMaxResults(pageSize).getResultList();
     }
