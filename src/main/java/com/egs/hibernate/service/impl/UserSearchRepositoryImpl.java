@@ -23,12 +23,15 @@ import java.util.List;
  **/
 public class UserSearchRepositoryImpl implements UserSearchRepository {
 
-    public static final String SORT_BY = "ASC";
+    private static final String FIELD_USERNAME = "username";
+    private static final String FIELD_FIRSTNAME = "firstName";
+    private static final String FIELD_LASTNAME = "lastName";
+    private static final String FIELD_BIRTHDATE = "birthdate";
 
-    public static final String FIELD_USERNAME = "username";
-    public static final String FIELD_FIRSTNAME = "firstName";
-    public static final String FIELD_LASTNAME = "lastName";
-    public static final String FIELD_BIRTHDATE = "birthdate";
+    private static final String BIRTHDATE_FORMAT_IN_DATABASE = "yyyy-MM-dd";
+
+    private static final String FIELD_PHONE_NUMBERS = "phoneNumbers";
+    private static final String FIELD_ADDRESSES = "addresses";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -47,7 +50,7 @@ public class UserSearchRepositoryImpl implements UserSearchRepository {
         final ArrayList<Predicate> predicates = new ArrayList<>();
 
         if (request.getBirthdate() != null) {
-            format = request.getBirthdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            format = request.getBirthdate().format(DateTimeFormatter.ofPattern(BIRTHDATE_FORMAT_IN_DATABASE));
         }
 
         addPredicate(userRoot, criteriaBuilder, predicates, FIELD_USERNAME, request.getUsername());
@@ -55,7 +58,7 @@ public class UserSearchRepositoryImpl implements UserSearchRepository {
         addPredicate(userRoot, criteriaBuilder, predicates, FIELD_LASTNAME, request.getLastName());
         addPredicate(userRoot, criteriaBuilder, predicates, FIELD_BIRTHDATE, format);
 
-        if (request.getSortBy().equalsIgnoreCase(SORT_BY)) {
+        if (request.getSortBy().equalsIgnoreCase(UserServiceImpl.DEFAULT_SORT)) {
             userCriteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get(request.getSortColumn())));
         } else {
             userCriteriaQuery.orderBy(criteriaBuilder.desc(userRoot.get(request.getSortColumn())));

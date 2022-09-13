@@ -1,20 +1,22 @@
 package com.egs.hibernate.entity;
 
 import com.egs.hibernate.utils.DBConstants;
+import com.egs.hibernate.utils.EntityGraphsNames;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
-@NamedEntityGraph(name = "withAddressesAndPhoneNumbers",
+@NamedEntityGraph(name = EntityGraphsNames.NAMED_ENTITY_GRAPH,
         attributeNodes = {
-                @NamedAttributeNode("phoneNumbers"),
-                @NamedAttributeNode(value = "addresses", subgraph = "countries")
+                @NamedAttributeNode(EntityGraphsNames.ATTRIBUTE_NODE_PHONE_NUMBER),
+                @NamedAttributeNode(value = EntityGraphsNames.ATTRIBUTE_NODE_ADDRESS,
+                        subgraph = EntityGraphsNames.SUB_NAMED_ENTITY_GRAPH)
         },
         subgraphs = {
-                @NamedSubgraph(name = "countries", attributeNodes = @NamedAttributeNode("country"))
+                @NamedSubgraph(name = EntityGraphsNames.SUB_NAMED_ENTITY_GRAPH,
+                        attributeNodes = @NamedAttributeNode(EntityGraphsNames.SUB_ATTRIBUTE_NODE_COUNTRY))
         }
 )
 @SequenceGenerator(name = "my_seq", sequenceName = "user_id_seq", allocationSize = 100)

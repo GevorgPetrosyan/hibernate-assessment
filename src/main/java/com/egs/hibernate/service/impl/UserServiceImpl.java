@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserService {
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final int DEFAULT_MAX_PAGE_SIZE = 100;
     private static final String DEFAULT_COLUMN = "id";
-    private static final String DEFAULT_SORT = "ASC";
+    public static final String DEFAULT_SORT = "ASC";
+    private static final String DESC_SORT = "DESC";
 
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService {
     private CountryResponse convertCountryToCountryResponse(final Country country) {
         final CountryResponse response = new CountryResponse();
 
-        response.setCountryCode(country.getCountryCode().getName());
+        response.setCountryCode(country.getCountryCode().getAlpha2());
         response.setDisplayName(country.getDisplayName());
 
         return response;
@@ -194,8 +195,8 @@ public class UserServiceImpl implements UserService {
 
     private String getSortDirection(final String sortDirection) {
 
-        if (sortDirection.equalsIgnoreCase("DESC")) {
-            return "DESC";
+        if (sortDirection.equalsIgnoreCase(DESC_SORT)) {
+            return DESC_SORT;
         }
 
         return DEFAULT_SORT;
