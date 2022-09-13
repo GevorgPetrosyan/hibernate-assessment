@@ -58,25 +58,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName) {
-        log.info("Users filter method works!");
+        log.info("Users filter method started! Attempt to show: {} users", pageSize);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(columnName));
         Mapper mapper = new Mapper();
-        List<User> users = new ArrayList<>();
-        switch (columnName) {
-            case "username":
-                users = userRepository.findByOrderByUsernameAsc(paging);
-                break;
-            case "firstName":
-                users = userRepository.findByOrderByFirstNameAsc(paging);
-                break;
-            case "lastName":
-                users = userRepository.findByOrderByLastNameAsc(paging);
-                break;
-            case "birthdate":
-                users = userRepository.findByOrderByBirthdateAsc(paging);
-                break;
-        }
-
+        List<User> users;
+        users = userRepository.findAll(paging);
         return new PageImpl<>(mapper.mapToDTOList(users, UserDTO.class));
     }
 
