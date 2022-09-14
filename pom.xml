@@ -56,7 +56,12 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.11</version>
         </dependency>
-
+        <dependency>
+            <artifactId>modelmapper</artifactId>
+            <groupId>org.modelmapper</groupId>
+            <scope>compile</scope>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

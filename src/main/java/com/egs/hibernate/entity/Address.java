@@ -40,6 +40,6 @@ public class Address extends BaseEntity {
     private Country country;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "base_user_id")
+    private BaseUser baseUser;
 }

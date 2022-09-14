@@ -19,7 +19,7 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class BaseUser extends BaseEntity {
 
     @Column(name = "username", unique = true)
     private String username;
@@ -33,10 +33,10 @@ public class User extends BaseEntity {
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "baseUser",cascade = CascadeType.ALL)
     private Set<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "baseUser", cascade = CascadeType.ALL)
     private Set<Address> addresses;
 
 }
