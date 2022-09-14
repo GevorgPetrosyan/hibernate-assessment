@@ -7,11 +7,13 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.mapper.UserMapper;
+import com.egs.hibernate.model.UserCountryResponseModel;
 import com.egs.hibernate.model.UserFullResponseModel;
 import com.egs.hibernate.model.UserResponseModel;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -127,6 +129,12 @@ public class UserServiceImpl implements UserService {
     public Slice<UserFullResponseModel> getAllUsers(final int page, final int size, final String sortBy) {
         final Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return userRepository.getAllUsers(pageable);
+    }
+
+    @Override
+    public Slice<UserCountryResponseModel> getCountOfUsersByCountry(final int page, final int size) {
+        final Pageable pageable = PageRequest.of(page, size);
+        return userRepository.getCountOfUsersByCountry(pageable);
     }
 
 

@@ -1,11 +1,10 @@
 package com.egs.hibernate.service;
 
+import com.egs.hibernate.model.UserCountryResponseModel;
 import com.egs.hibernate.model.UserFullResponseModel;
 import com.egs.hibernate.model.UserResponseModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
-
-import java.util.List;
 
 public interface UserService {
 
@@ -17,4 +16,5 @@ public interface UserService {
 
     Slice<UserFullResponseModel> getAllUsers(int page, int size, String sortBy);
 
+    Slice<UserCountryResponseModel> getCountOfUsersByCountry(int page, int size);
 }

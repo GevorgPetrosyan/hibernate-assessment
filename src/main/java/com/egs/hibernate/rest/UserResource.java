@@ -1,9 +1,14 @@
 package com.egs.hibernate.rest;
 
 
+import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.User;
+import com.egs.hibernate.model.UserCountryResponseModel;
 import com.egs.hibernate.model.UserFullResponseModel;
 import com.egs.hibernate.model.UserResponseModel;
+import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,7 +19,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/user/")
@@ -52,6 +62,15 @@ public class UserResource {
         final Slice<UserFullResponseModel> userFullResponseModelSlice = userService.getAllUsers(page, size, sortBy);
 
         return ResponseEntity.ok(userFullResponseModelSlice);
+    }
+
+    @GetMapping("getCountOfUsersByCountry")
+    public ResponseEntity<Slice<UserCountryResponseModel>> getCountOfUsersByCountry(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "3") String sortBy
+    ) {
+        return ResponseEntity.ok(userService.getCountOfUsersByCountry(page, size));
     }
 
 }

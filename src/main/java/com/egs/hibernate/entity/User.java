@@ -6,7 +6,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -37,10 +38,10 @@ public class User extends BaseEntity {
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Address> addresses;
 
 }
