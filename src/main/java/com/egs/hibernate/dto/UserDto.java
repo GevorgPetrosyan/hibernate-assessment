@@ -1,4 +1,4 @@
-package com.egs.hibernate.dtos;
+package com.egs.hibernate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +20,6 @@ public class UserDto implements Serializable {
     private String firstName;
     private String lastName;
     private LocalDate birthdate;
+    private AddressDto address;
+    private PhoneNumberDto phoneNumber;
 }

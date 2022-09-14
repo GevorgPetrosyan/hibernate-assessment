@@ -3,8 +3,8 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
-import com.egs.hibernate.dtos.UserDto;
-import com.egs.hibernate.dtos.UserMapper;
+import com.egs.hibernate.dto.UserDto;
+import com.egs.hibernate.mapper.UserMapper;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
@@ -35,13 +35,13 @@ public class UserServiceImpl implements UserService {
     private final CountryRepository countryRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void generateUsers(final int count) {
         int i = userRepository.findFirstByOrderByCreatedDesc()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
-                .map(it->++it)
+                .map(it -> ++it)
                 .orElse(0);
         final int terminate = i + count;
         for (; i < terminate; i++) {
@@ -80,12 +80,14 @@ public class UserServiceImpl implements UserService {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
+
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
                         .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
+
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())

@@ -1,6 +1,6 @@
 package com.egs.hibernate.rest;
 
-import com.egs.hibernate.dtos.UserDto;
+import com.egs.hibernate.dto.UserDto;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

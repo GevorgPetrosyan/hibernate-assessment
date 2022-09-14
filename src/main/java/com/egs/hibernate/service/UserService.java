@@ -1,6 +1,6 @@
 package com.egs.hibernate.service;
 
-import com.egs.hibernate.dtos.UserDto;
+import com.egs.hibernate.dto.UserDto;
 
 import java.util.List;
 
