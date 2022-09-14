@@ -35,7 +35,7 @@ public class UserResource {
     public ResponseEntity<Page<UserDTO>> filterUsers(
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "50") Integer pageSize,
-            @RequestParam(defaultValue = "firstName") String columnName){
+            @RequestParam(defaultValue = "id") String columnName){
         return ResponseEntity.ok(userService.usersFilter(pageNo, pageSize,columnName));
     }
 }
