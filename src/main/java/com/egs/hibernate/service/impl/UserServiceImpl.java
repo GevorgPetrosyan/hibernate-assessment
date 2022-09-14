@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -58,12 +56,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName) {
-        log.info("Users filter method started! Attempt to show: {} users", pageSize);
+        log.info("Users filter method started! Attempt to show: {} users sort by: {} ", pageSize, columnName);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(columnName));
         Mapper mapper = new Mapper();
-        List<User> users;
-        users = userRepository.findAll(paging);
-        return new PageImpl<>(mapper.mapToDTOList(users, UserDTO.class));
+        return new PageImpl<>(mapper.mapToDTOList(userRepository.findAll(paging) , UserDTO.class));
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
