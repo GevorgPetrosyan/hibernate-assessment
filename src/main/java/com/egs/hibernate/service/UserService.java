@@ -1,6 +1,5 @@
 package com.egs.hibernate.service;
 
-import com.egs.hibernate.rest.model.country.CountryCodeWithManyUsersResponse;
 import com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse;
 import com.egs.hibernate.rest.model.user.UserResponse;
 import com.egs.hibernate.rest.model.user.UserSearchRequest;
@@ -15,5 +14,5 @@ public interface UserService {
 
     List<UserCountWithCountryCodeResponse> getUsersCountWithCountryCode();
 
-    List<CountryCodeWithManyUsersResponse> getCountryWithManyUsers();
+    List<String> getCountryWithManyUsers();
 }

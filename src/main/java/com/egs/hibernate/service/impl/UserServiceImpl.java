@@ -10,7 +10,6 @@ import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.rest.model.address.AddressResponse;
-import com.egs.hibernate.rest.model.country.CountryCodeWithManyUsersResponse;
 import com.egs.hibernate.rest.model.country.CountryResponse;
 import com.egs.hibernate.rest.model.phone_number.PhoneNumberResponse;
 import com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse;
@@ -100,7 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<CountryCodeWithManyUsersResponse> getCountryWithManyUsers() {
+    public List<String> getCountryWithManyUsers() {
         return userRepository.getCountryWithManyUsers();
     }
 

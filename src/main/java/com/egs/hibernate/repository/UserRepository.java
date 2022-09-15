@@ -1,7 +1,6 @@
 package com.egs.hibernate.repository;
 
 import com.egs.hibernate.entity.User;
-import com.egs.hibernate.rest.model.country.CountryCodeWithManyUsersResponse;
 import com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse;
 import com.egs.hibernate.service.UserSearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,13 +25,13 @@ public interface UserRepository extends JpaRepository<User, Long>, UserSearchRep
             "ORDER BY c.countryCode ")
     List<UserCountWithCountryCodeResponse> getUsersCountWithCountryCode();
 
-    @Query(value = "SELECT new com.egs.hibernate.rest.model.country.CountryCodeWithManyUsersResponse(c.countryCode)" +
+    @Query(value = "SELECT c.countryCode " +
             "FROM users AS u " +
             "JOIN address AS a ON u.id = a.user.id " +
             "JOIN country AS c ON c.id = a.country.id " +
             "GROUP BY c.countryCode " +
             "HAVING count(u) > 10000" +
             "ORDER BY c.countryCode ")
-    List<CountryCodeWithManyUsersResponse> getCountryWithManyUsers();
+    List<String> getCountryWithManyUsers();
 
 }
