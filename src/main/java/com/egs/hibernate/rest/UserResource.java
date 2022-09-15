@@ -1,6 +1,6 @@
 package com.egs.hibernate.rest;
 
-import com.egs.hibernate.model.CountOfUsersByCountryCodeResponse;
+import com.egs.hibernate.model.CountryCodeResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +54,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Count of users by the country code have been successfully taken")})
     @GetMapping("countOfUsers")
-    public ResponseEntity<List<CountOfUsersByCountryCodeResponse>> getCountOfUsersByCountryCode(){
+    public ResponseEntity<List<CountryCodeResponse>> getCountOfUsersByCountryCode(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getUsersByCountryCode());
