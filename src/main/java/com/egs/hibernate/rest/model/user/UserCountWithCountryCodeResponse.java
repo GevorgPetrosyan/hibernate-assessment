@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserCountWithCountryCodeResponse {
 
-    private CountryCode countryCode;
+    private String countryCode;
     private Long userCount;
 
 }

@@ -23,7 +23,6 @@ public class Country extends BaseEntity {
     private String displayName;
 
     @Column(name = DBConstants.COLUMN_COUNTRY_CODE, unique = true)
-    @Enumerated(EnumType.STRING)
-    private CountryCode countryCode;
+    private String countryCode;
 
 }

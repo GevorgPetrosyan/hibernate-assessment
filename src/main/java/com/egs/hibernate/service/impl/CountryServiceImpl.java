@@ -20,7 +20,7 @@ public class CountryServiceImpl implements CountryService {
     public void storeAllCountries() {
         if (countryRepository.count() == 0) {
             Arrays.stream(CountryCode.values())
-                    .map(it -> Country.builder().countryCode(it).displayName(it.getName()).build())
+                    .map(it -> Country.builder().countryCode(it.getAlpha2()).displayName(it.getName()).build())
                     .forEach(countryRepository::save);
         }
     }

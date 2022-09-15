@@ -94,7 +94,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public List<UserCountWithCountryCodeResponse> getUsersCountWithCountryCode() {
         return userRepository.getUsersCountWithCountryCode();
     }
@@ -143,7 +142,7 @@ public class UserServiceImpl implements UserService {
     private CountryResponse convertCountryToCountryResponse(final Country country) {
         final CountryResponse response = new CountryResponse();
 
-        response.setCountryCode(country.getCountryCode().getAlpha2());
+        response.setCountryCode(country.getCountryCode());
         response.setDisplayName(country.getDisplayName());
 
         return response;

@@ -16,11 +16,13 @@ public interface UserRepository extends JpaRepository<User, Long>, UserSearchRep
     @Query(value = "select username from users where id IN (select MAX(u1.id) FROM users AS u1)", nativeQuery = true)
     Optional<String> findFirstUsernameByMaxId();
 
-    @Query(value = "SELECT new com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse(c.countryCode , count(u) ) " +
-            "FROM users AS u\n" +
-            "JOIN address AS a ON u.id = a.user.id\n" +
-            "JOIN country AS c ON c.id = a.country.id\n" +
-            "GROUP BY c.countryCode")
+    @Query(value = "SELECT new com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse(c.countryCode , count(u)) " +
+            "FROM users AS u " +
+            "JOIN address AS a ON u.id = a.user.id " +
+            "JOIN country AS c ON c.id = a.country.id " +
+            "WHERE LENGTH(c.countryCode) < 3 " +
+            "GROUP BY c.countryCode " +
+            "ORDER BY c.countryCode ")
     List<UserCountWithCountryCodeResponse> getUsersCountWithCountryCode();
 
 }
