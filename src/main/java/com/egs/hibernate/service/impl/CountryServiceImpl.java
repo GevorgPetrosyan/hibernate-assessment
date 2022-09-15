@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void storeAllCountries() {
         if (countryRepository.count() == 0) {
             Arrays.stream(CountryCode.values())
