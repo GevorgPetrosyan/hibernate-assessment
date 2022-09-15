@@ -7,12 +7,14 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.BaseUser;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
+import com.egs.hibernate.exception.CountryByCodeNotFoundException;
 import com.egs.hibernate.mapper.UserMapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.response.UserResponse;
 import com.egs.hibernate.response.UsersCountResponse;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -26,6 +28,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -101,8 +104,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UsersCountResponse findUsersCountByCode(String code) {
-        Integer allUsersByCountryCode = userRepository.findUsersCountByCountryCode(code);
-        return new UsersCountResponse(code, allUsersByCountryCode);
+        CountryCode country = Arrays.stream(CountryCode.values())
+                .filter(countryCode -> countryCode.name().equalsIgnoreCase(code))
+                .findFirst()
+                .orElseThrow(CountryByCodeNotFoundException::new);
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<BaseUser> userRoot = criteriaQuery.from(BaseUser.class);
+        Root<Address> mapping = criteriaQuery.from(Address.class);
+        Root<Country> countryRoot = criteriaQuery.from(Country.class);
+        criteriaQuery.select(userRoot.get("id"));
+        criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(userRoot.get("id"), mapping.get("baseUser")),
+                        criteriaBuilder.equal(countryRoot.get("id"), mapping.get("country")),
+                        criteriaBuilder.equal(countryRoot.get("countryCode"), country)
+                )
+        );
+        int typedQuery = entityManager.createQuery(criteriaQuery).getResultList().size();
+        return new UsersCountResponse(code, typedQuery);
     }
 
     private static PhoneNumber constructPhoneNumber() {
