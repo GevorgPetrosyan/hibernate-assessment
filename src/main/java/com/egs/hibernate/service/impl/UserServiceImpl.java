@@ -6,7 +6,7 @@ import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
-import com.egs.hibernate.model.CountOfUsersByCountryCodeResponse;
+import com.egs.hibernate.model.CountryCodeResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
@@ -73,6 +73,25 @@ public class UserServiceImpl implements UserService {
         System.out.println("result" + " = " + (end - start) / 1000 + " seconds");
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Page<UserResponse> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) {
+
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        List<UserResponse> pagedResult = userRepository.findAll(paging).stream()
+                .map(mapper::userToResponse)
+                .collect(Collectors.toList());
+        return new PageImpl<>(pagedResult);
+    }
+
+    @Override
+    public List<CountryCodeResponse> getUsersByCountryCode() {
+        return entityManager.createQuery("SELECT new com.egs.hibernate.model.CountryCodeResponse(c.countryCode , count(u) ) " +
+                "FROM users AS u " +
+                "JOIN address AS a ON u.id = a.user.id  " +
+                "JOIN country  AS c ON c.id = a.country.id GROUP BY c.countryCode", CountryCodeResponse.class).getResultList();
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
@@ -92,24 +111,4 @@ public class UserServiceImpl implements UserService {
                 .birthdate(person.getBirthdate().toLocalDate()).build();
     }
 
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Page<UserResponse> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) {
-
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        List<UserResponse> pagedResult = userRepository.findAll(paging).stream()
-                .map(mapper::userToResponse)
-                .collect(Collectors.toList());
-        return new PageImpl<>(pagedResult);
-    }
-
-    @Override
-    @Transactional
-    public List<CountOfUsersByCountryCodeResponse> getUsersByCountryCode() {
-        return entityManager.createQuery("SELECT new com.egs.hibernate.model.CountOfUsersByCountryCodeResponse(c.countryCode , count(u) ) " +
-                "FROM users AS u " +
-                "JOIN address AS a ON u.id = a.user.id  " +
-                "JOIN country  AS c ON c.id = a.country.id GROUP BY c.countryCode", CountOfUsersByCountryCodeResponse.class).getResultList();
-    }
 }

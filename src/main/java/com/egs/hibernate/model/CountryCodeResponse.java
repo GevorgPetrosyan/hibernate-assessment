@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CountOfUsersByCountryCodeResponse {
+public class CountryCodeResponse {
 
     private CountryCode countryCode;
     private Long count;
