@@ -14,9 +14,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressDto implements Serializable {
+    private String city;
     private String street;
     private String address_line_1;
     private String address_line_2;
-    private String city;
     private String postalCode;
+    private String country;
 }

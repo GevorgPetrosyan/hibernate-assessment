@@ -1,5 +1,6 @@
 package com.egs.hibernate.dto;
 
+import com.neovisionaries.i18n.CountryCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,8 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryDto implements Serializable {
+public class UserByCountryDto implements Serializable {
 
-    private String countryCode;
-    private Integer count;
+    private CountryCode countryCode;
+    private Long count;
 }

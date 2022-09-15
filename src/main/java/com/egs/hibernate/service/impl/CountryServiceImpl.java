@@ -15,6 +15,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void storeAllCountries() {

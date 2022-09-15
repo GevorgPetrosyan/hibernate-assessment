@@ -3,11 +3,12 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.egs.hibernate.dto.UserByCountryDto;
 import com.egs.hibernate.dto.UserDto;
-import com.egs.hibernate.mapper.UserMapper;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.mapper.Mapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
@@ -21,7 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -59,21 +62,28 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     @Override
     public List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy) {
-        UserMapper mapper = new UserMapper();
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
 
         Page<User> all = userRepository.findAll(pageable);
-        List<UserDto> userDtos = new ArrayList<>();
 
-        for (User u : all) {
-            UserDto userDto = mapper.entityToDto(u);
-            userDtos.add(userDto);
-        }
+        return all.stream().map(Mapper::userEntityToDto).collect(Collectors.toList());
+    }
 
-        return userDtos;
+    @Override
+    public List<UserByCountryDto> getCountOfUsersByCountry() {
+
+        String select = "SELECT new com.egs.hibernate.dto.UserByCountryDto(c.countryCode, count(u.id)) " +
+                "FROM users u join address a on u.id = a.user.id " +
+                "join country c on c.id = a.country.id group by c.countryCode";
+
+        Query query = entityManager.createQuery(select);
+        List<UserByCountryDto> countUsersByCountry = query.getResultList();
+
+        return countUsersByCountry;
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
