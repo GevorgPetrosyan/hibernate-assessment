@@ -4,12 +4,15 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.assigment.core.entity.Address;
+import com.egs.hibernate.assigment.core.entity.Country;
 import com.egs.hibernate.assigment.core.entity.PhoneNumber;
 import com.egs.hibernate.assigment.core.entity.User;
 import com.egs.hibernate.assigment.core.mapper.UserMapper;
+import com.egs.hibernate.assigment.core.repository.AddressRepository;
 import com.egs.hibernate.assigment.core.repository.CountryRepository;
 import com.egs.hibernate.assigment.core.repository.UserRepository;
 import com.egs.hibernate.assigment.core.service.UserService;
+import com.egs.hibernate.assigment.data.transfer.response.CountryCodesAndCountOfUsersResponse;
 import com.egs.hibernate.assigment.data.transfer.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -31,6 +35,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final AddressRepository addressRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -65,14 +70,36 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponseList(users);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @Lock(value = LockModeType.OPTIMISTIC)
+    public List<CountryCodesAndCountOfUsersResponse> getUsersCountByCountryCode() {
+        List<CountryCodesAndCountOfUsersResponse> countOfUsersResponses =
+                new LinkedList<>();
+        List<Country> countries = countryRepository.findAll();
+        for (Country country : countries) {
+            long count = addressRepository
+                    .countDistinctByUserIsNotNullAndCountry(country);
+            if (count != 0)
+            countOfUsersResponses.add(
+                    new CountryCodesAndCountOfUsersResponse(country.getCountryCode().toString(), count )
+            );
+        }
+        return countOfUsersResponses;
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
-        return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
+        return PhoneNumber.builder()
+                .phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
-                .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
-                        .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
+                .map(fakeAddress -> Address.builder()
+                        .city(fakeAddress.getCity())
+                        .postalCode(fakeAddress.getPostalCode())
+                        .country(countryRepository.findById(
+                                ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
     private static User constructUser(String username) {

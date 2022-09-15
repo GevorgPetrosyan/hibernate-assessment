@@ -2,6 +2,7 @@ package com.egs.hibernate.assigment.rest.controller;
 
 
 import com.egs.hibernate.assigment.core.service.UserService;
+import com.egs.hibernate.assigment.data.transfer.response.CountryCodesAndCountOfUsersResponse;
 import com.egs.hibernate.assigment.data.transfer.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,4 +42,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll());
     }
 
+    @Operation(summary = "Get users count with country codes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")})
+    @GetMapping("count/country")
+    public ResponseEntity<List<CountryCodesAndCountOfUsersResponse>> getUsersCountByCountryCode() {
+        return ResponseEntity.ok(userService.getUsersCountByCountryCode());
+    }
 }
