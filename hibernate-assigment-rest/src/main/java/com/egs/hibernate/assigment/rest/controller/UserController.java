@@ -45,8 +45,9 @@ public class UserController {
     @Operation(summary = "Get users count with country codes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200")})
-    @GetMapping("count/country")
-    public ResponseEntity<List<CountryCodesAndCountOfUsersResponse>> getUsersCountByCountryCode() {
-        return ResponseEntity.ok(userService.getUsersCountByCountryCode());
+    @GetMapping("count/country/{validateCount}")
+    public ResponseEntity<List<CountryCodesAndCountOfUsersResponse>> getUsersCountByCountryCode(
+            @PathVariable Long validateCount) {
+        return ResponseEntity.ok(userService.getUsersCountByCountryCode(validateCount));
     }
 }

@@ -73,14 +73,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     @Lock(value = LockModeType.OPTIMISTIC)
-    public List<CountryCodesAndCountOfUsersResponse> getUsersCountByCountryCode() {
+    public List<CountryCodesAndCountOfUsersResponse> getUsersCountByCountryCode(Long validateCount) {
         List<CountryCodesAndCountOfUsersResponse> countOfUsersResponses =
                 new LinkedList<>();
         List<Country> countries = countryRepository.findAll();
         for (Country country : countries) {
             long count = addressRepository
                     .countDistinctByUserIsNotNullAndCountry(country);
-            if (count != 0)
+            if (count > validateCount)
             countOfUsersResponses.add(
                     new CountryCodesAndCountOfUsersResponse(country.getCountryCode().toString(), count )
             );
