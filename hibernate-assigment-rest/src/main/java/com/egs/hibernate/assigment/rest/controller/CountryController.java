@@ -34,7 +34,7 @@ public class CountryController {
     @GetMapping("with/{validateCount}")
     @Operation(summary = "Get list of countries which have more than selected count users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Countries initialization is successfully done")})
+            @ApiResponse(responseCode = "200")})
     public ResponseEntity<List<String>> countriesWhichUsers(@PathVariable Long validateCount) {
         return ResponseEntity.ok(countryService.getAllByUsersCount(validateCount));
     }
