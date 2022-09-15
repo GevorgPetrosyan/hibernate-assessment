@@ -4,6 +4,7 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.dto.UserDTO;
+import com.egs.hibernate.dto.UsersCountDTO;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -60,6 +62,12 @@ public class UserServiceImpl implements UserService {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(columnName));
         Mapper mapper = new Mapper();
         return new PageImpl<>(mapper.mapToDTOList(userRepository.findAll(paging) , UserDTO.class));
+    }
+
+    @Override
+    public List<UsersCountDTO> usersCountByCountryCode() {
+        Mapper mapper = new Mapper();
+        return mapper.mapToDTOList(userRepository.usersCountByCountryCode(), UsersCountDTO.class);
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {

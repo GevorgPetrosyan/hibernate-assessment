@@ -1,7 +1,5 @@
 package com.egs.hibernate.dto;
 
-import com.egs.hibernate.entity.Address;
-import com.egs.hibernate.entity.PhoneNumber;
 import lombok.*;
 
 import java.time.LocalDate;

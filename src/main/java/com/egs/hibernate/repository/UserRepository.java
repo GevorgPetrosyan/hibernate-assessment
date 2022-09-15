@@ -1,5 +1,6 @@
 package com.egs.hibernate.repository;
 
+import com.egs.hibernate.dto.UsersCountDTO;
 import com.egs.hibernate.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<String> findUserByMaxID();
 
     List<User> findAll(Pageable pageable);
+
+
+    @Query(value = "SELECT new com.egs.hibernate.dto.UsersCountDTO(c.countryCode , count(u)) " +
+            "FROM users AS u " +
+            "JOIN address AS a ON u.id = a.user.id " +
+            "JOIN country AS c ON c.id = a.country.id " +
+            "GROUP BY c.countryCode " +
+            "ORDER BY COUNT(c.countryCode) DESC")
+    List<UsersCountDTO> usersCountByCountryCode();
+
 }
