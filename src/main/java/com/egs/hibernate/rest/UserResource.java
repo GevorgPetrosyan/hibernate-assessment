@@ -1,6 +1,7 @@
 package com.egs.hibernate.rest;
 
 
+import com.egs.hibernate.rest.model.country.CountryCodeWithManyUsersResponse;
 import com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse;
 import com.egs.hibernate.rest.model.user.UserResponse;
 import com.egs.hibernate.rest.model.user.UserSearchRequest;
@@ -49,6 +50,15 @@ public class UserResource {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getUsersCountWithCountryCode());
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "taken users count and countryCode successfully")})
+    @GetMapping("/getCountryWithManyUsers")
+    public ResponseEntity<List<CountryCodeWithManyUsersResponse>> getCountryWithManyUsers() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.getCountryWithManyUsers());
     }
 
 }
