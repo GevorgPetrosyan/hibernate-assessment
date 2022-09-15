@@ -6,6 +6,7 @@ import com.neovisionaries.i18n.CountryCode;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @SequenceGenerator(name = SequenceGeneratorNames.GENERATOR_NAME,
         sequenceName = SequenceGeneratorNames.COUNTRY_SEQUENCE_NAME,
@@ -24,4 +25,5 @@ public class Country extends BaseEntity {
     @Column(name = DBConstants.COLUMN_COUNTRY_CODE, unique = true)
     @Enumerated(EnumType.STRING)
     private CountryCode countryCode;
+
 }

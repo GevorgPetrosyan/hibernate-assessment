@@ -1,5 +1,7 @@
 package com.egs.hibernate.service.impl;
 
+import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserSearchRepository;
@@ -10,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;

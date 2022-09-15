@@ -48,7 +48,7 @@ public final class DBConstants {
     public static final int COLUMN_PHONE_NUMBER_LENGTH = 9;
 
     // Mapped field name
-    public static final String MAPPED_FIELD_NAME = "user";
+    public static final String MAPPED_FIELD_NAME_USER = "user";
 
     // Sequence allocate size
     public static final int ALLOCATION_SIZE = 100;

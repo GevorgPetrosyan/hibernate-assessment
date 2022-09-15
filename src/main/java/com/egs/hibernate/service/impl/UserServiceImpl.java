@@ -12,6 +12,7 @@ import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.rest.model.address.AddressResponse;
 import com.egs.hibernate.rest.model.country.CountryResponse;
 import com.egs.hibernate.rest.model.phone_number.PhoneNumberResponse;
+import com.egs.hibernate.rest.model.user.UserCountWithCountryCodeResponse;
 import com.egs.hibernate.rest.model.user.UserResponse;
 import com.egs.hibernate.rest.model.user.UserSearchRequest;
 import com.egs.hibernate.service.UserService;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +47,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -85,6 +91,12 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(userResponses);
+    }
+
+    @Override
+    @Transactional
+    public List<UserCountWithCountryCodeResponse> getUsersCountWithCountryCode() {
+        return userRepository.getUsersCountWithCountryCode();
     }
 
     private UserResponse convertUserToUserResponse(User user) {

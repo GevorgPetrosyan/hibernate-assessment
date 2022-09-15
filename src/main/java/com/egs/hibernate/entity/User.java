@@ -43,11 +43,11 @@ public class User extends BaseEntity {
     @Column(name = DBConstants.COLUMN_BIRTHDATE)
     private LocalDate birthdate;
 
-    @OneToMany(mappedBy = DBConstants.MAPPED_FIELD_NAME,
+    @OneToMany(mappedBy = DBConstants.MAPPED_FIELD_NAME_USER,
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<PhoneNumber> phoneNumbers;
 
-    @OneToMany(mappedBy = DBConstants.MAPPED_FIELD_NAME,
+    @OneToMany(mappedBy = DBConstants.MAPPED_FIELD_NAME_USER,
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses;
 
