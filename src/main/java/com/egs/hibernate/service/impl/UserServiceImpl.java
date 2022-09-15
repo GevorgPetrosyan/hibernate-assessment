@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UsersCountDTO> usersCountByCountryCode() {
+        log.info("Users count by country code method start work!");
         Mapper mapper = new Mapper();
         return mapper.mapToDTOList(userRepository.usersCountByCountryCode(), UsersCountDTO.class);
     }
