@@ -29,6 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserSearchRep
             "FROM users AS u " +
             "JOIN address AS a ON u.id = a.user.id " +
             "JOIN country AS c ON c.id = a.country.id " +
+            "WHERE LENGTH(c.countryCode) < 3" +
             "GROUP BY c.countryCode " +
             "HAVING count(u) > 10000" +
             "ORDER BY c.countryCode ")
