@@ -15,7 +15,7 @@ public class PhoneNumber extends BaseEntity {
     @Column(name = "phone_number", length = 9, nullable = false)
     private String phoneNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 }

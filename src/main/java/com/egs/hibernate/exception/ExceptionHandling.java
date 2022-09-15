@@ -1,9 +1,9 @@
 package com.egs.hibernate.exception;
 
 import com.egs.hibernate.dto.response.ResponseHttp;
-import com.egs.hibernate.exception.domein.PaginationPageException;
-import com.egs.hibernate.exception.domein.PaginationSizeException;
-import com.egs.hibernate.exception.domein.PaginationSortException;
+import com.egs.hibernate.exception.domain.PaginationPageException;
+import com.egs.hibernate.exception.domain.PaginationSizeException;
+import com.egs.hibernate.exception.domain.PaginationSortException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

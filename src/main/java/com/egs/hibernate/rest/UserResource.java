@@ -1,7 +1,8 @@
 package com.egs.hibernate.rest;
 
 
-import com.egs.hibernate.dto.projection.UserProjectionDto;
+import com.egs.hibernate.dto.response.UserCountByCountryCode;
+import com.egs.hibernate.dto.response.UserResponse;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,7 +34,15 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been returned successfully")})
     @GetMapping
-    public List<UserProjectionDto> findAll(@RequestParam int page, @RequestParam int size,@RequestParam String field) {
-        return userService.findAllUsers(page, size,field);
+    public List<UserResponse> findAll(@RequestParam int page, @RequestParam int size, @RequestParam String field) {
+        return userService.findAllUsers(page, size, field);
+    }
+
+    @Operation(summary = "Find all users count by CountryCode")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users count have been returned successfully")})
+    @GetMapping("/countryCode/{countryCode}")
+    public UserCountByCountryCode findAllUsersByCountryCode(@PathVariable String countryCode) {
+        return userService.findAllUsersByCountryId(countryCode);
     }
 }

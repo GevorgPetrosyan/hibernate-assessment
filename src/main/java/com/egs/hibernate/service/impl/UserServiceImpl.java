@@ -3,14 +3,16 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
-import com.egs.hibernate.dto.projection.UserProjectionDto;
+import com.egs.hibernate.dto.response.UserCountByCountryCode;
+import com.egs.hibernate.dto.response.UserResponse;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
-import com.egs.hibernate.exception.domein.PaginationPageException;
-import com.egs.hibernate.exception.domein.PaginationSizeException;
-import com.egs.hibernate.exception.domein.PaginationSortException;
+import com.egs.hibernate.exception.domain.PaginationPageException;
+import com.egs.hibernate.exception.domain.PaginationSizeException;
+import com.egs.hibernate.exception.domain.PaginationSortException;
+import com.egs.hibernate.mapper.UserMapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
@@ -22,6 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -32,6 +38,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final UserMapper userMapper;
+
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -64,10 +74,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProjectionDto> findAllUsers(int page, int size, String field) throws PaginationSizeException {
+    @Transactional
+    public List<UserResponse> findAllUsers(int page, int size, String field) throws PaginationSizeException {
         checkPaginationFieldsAndSort(page, size, field);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(field));
-        return userRepository.findAllUsers(pageRequest);
+        return userRepository.findAllUsers(pageRequest)
+                .stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public UserCountByCountryCode findAllUsersByCountryId(String code) {
+        Query query = entityManager.createNativeQuery("select distinct count(u.\"id\") from users u" +
+                " left join address a on u.id = a.user_id and" +
+                " a.country_id = (select id from country c where c.country_code =:code) " +
+                "where a.country_id is not null;");
+        query.setParameter("code", code);
+        BigInteger result = (BigInteger) query.getSingleResult();
+
+        return new UserCountByCountryCode(code, result.intValue());
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
@@ -100,4 +127,5 @@ public class UserServiceImpl implements UserService {
             throw new PaginationSortException("please choose one correct field for sorting");
         }
     }
+
 }
