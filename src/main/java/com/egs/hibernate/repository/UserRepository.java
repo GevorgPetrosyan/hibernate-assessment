@@ -26,4 +26,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
             "ORDER BY COUNT(c.countryCode) DESC")
     List<UsersCountDTO> usersCountByCountryCode();
 
+    @Query(value = "SELECT c.countryCode " +
+            "FROM users u " +
+            "JOIN address a ON u.id = a.user.id " +
+            "JOIN country c ON c.id = a.country.id " +
+            "GROUP BY c.countryCode " +
+            "HAVING count(u.id) > 1000 "
+            )
+    List<String> usersCluster();
+
 }

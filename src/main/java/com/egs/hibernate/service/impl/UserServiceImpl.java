@@ -71,6 +71,12 @@ public class UserServiceImpl implements UserService {
         return mapper.mapToDTOList(userRepository.usersCountByCountryCode(), UsersCountDTO.class);
     }
 
+    @Override
+    public List<String> usersCluster() {
+        log.info("Users count by country code method start work!");
+        return userRepository.usersCluster();
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
