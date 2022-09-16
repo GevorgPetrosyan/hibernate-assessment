@@ -6,7 +6,8 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 
-@Entity(name = "address")
+@Entity
+@Table(name = "address")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public class Address extends BaseEntity {
     @JoinColumn(name = "country_id")
     private Country country;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

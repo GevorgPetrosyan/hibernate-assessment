@@ -1,14 +1,13 @@
 package com.egs.hibernate.model;
 
-import com.neovisionaries.i18n.CountryCode;
+import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.PhoneNumber;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * @author Vahan Grigoryan
@@ -28,19 +27,7 @@ public class UserFullResponseModel {
 
     private LocalDate birthdate;
 
-    private String phoneNumber;
+    private Set<AddressResponseModel> addresses;
 
-    private String street;
-
-    private String addressLine1;
-
-    private String addressLine2;
-
-    private String city;
-
-    private String postalCode;
-
-    private CountryCode countryCode;
-
-    private String displayName;
+    private Set<PhoneNumberResponseModel> phoneNumbers;
 }

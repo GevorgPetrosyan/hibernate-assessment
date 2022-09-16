@@ -6,14 +6,13 @@ import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
-import com.egs.hibernate.mapper.UserMapper;
+import com.egs.hibernate.mapper.Mapper;
 import com.egs.hibernate.model.UserCountryResponseModel;
 import com.egs.hibernate.model.UserFullResponseModel;
 import com.egs.hibernate.model.UserResponseModel;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
-import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -21,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,9 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final CountryRepository countryRepository;
+
+    private final Mapper mapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -119,22 +116,55 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Get All Users(username, firstName, lastName, birthdate)
+     * @param page
+     * @param size
+     * @param sortBy
+     * @return
+     */
     @Override
     public Page<UserResponseModel> getAll(final int page, final int size, final String sortBy) {
         final Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return userRepository.getAll(pageable);
     }
 
+    /**
+     * Get All Users(username, firstName, lastName, birthdate, addresses, phone numbers)
+     * @param page
+     * @param size
+     * @param sortBy
+     * @return
+     */
     @Override
-    public Slice<UserFullResponseModel> getAllUsers(final int page, final int size, final String sortBy) {
+    public Page<UserFullResponseModel> getAllUsers(final int page, final int size, final String sortBy) {
         final Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return userRepository.getAllUsers(pageable);
+        final Page<User> users = userRepository.getAllUsers(pageable);
+
+        final List<UserFullResponseModel> responseModelList = users.stream().map((user -> {
+            final Set<Address> addresses = user.getAddresses();
+            final Set<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
+
+            return new UserFullResponseModel(
+                    user.getUsername(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getBirthdate(),
+                    mapper.mapToAddressResponseModelSet(addresses),
+                    mapper.mapToPhoneNumberResponseModelSet(phoneNumbers)
+            );
+        })).collect(Collectors.toList());
+
+        return new PageImpl<>(responseModelList, pageable, users.getTotalElements());
     }
 
+    /**
+     * Get Count of users by country (count of users, country)
+     * @return
+     */
     @Override
-    public Slice<UserCountryResponseModel> getCountOfUsersByCountry(final int page, final int size) {
-        final Pageable pageable = PageRequest.of(page, size);
-        return userRepository.getCountOfUsersByCountry(pageable);
+    public List<UserCountryResponseModel> getCountOfUsersByCountry() {
+        return userRepository.getCountOfUsersByCountry();
     }
 
 

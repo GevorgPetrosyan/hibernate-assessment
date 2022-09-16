@@ -10,12 +10,9 @@ import lombok.Setter;
  * @Date 9/14/2022
  */
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class UserCountryResponseModel {
+public interface UserCountryResponseModel {
 
-    private CountryCode countryCode;
+    CountryCode getCountryCode();
 
-    private Long count;
+    Long getCount();
 }
