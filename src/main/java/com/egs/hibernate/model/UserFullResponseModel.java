@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * @author Tigran Hovhannisyan
@@ -26,19 +27,7 @@ public class UserFullResponseModel {
 
     private LocalDate birthdate;
 
-    private String street;
+    private Set<AddressResponseModel> addresses;
 
-    private String addressLine1;
-
-    private String addressLine2;
-
-    private String city;
-
-    private String postalCode;
-
-    private CountryCode countryCode;
-
-    private String displayName;
-
-    private String phoneNumber;
+    private Set<PhoneNumberResponseModel> phoneNumbers;
 }

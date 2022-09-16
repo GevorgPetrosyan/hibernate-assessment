@@ -1,6 +1,7 @@
 package com.egs.hibernate.rest;
 
 
+import com.egs.hibernate.model.UserCountryResponseModel;
 import com.egs.hibernate.model.UserFullResponseModel;
 import com.egs.hibernate.model.UserResponseModel;
 import com.egs.hibernate.service.UserService;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user/")
@@ -51,6 +54,13 @@ public class UserResource {
         Slice<UserFullResponseModel> users = userService.getUserFullResponseModel(pageNumber, pageSize, sortBy);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(users);
+    }
+
+    @GetMapping("/getUserCountByCountry")
+    public ResponseEntity<List<UserCountryResponseModel>> getUserCountByCountry() {
+        List<UserCountryResponseModel> countOfUsersByCountry = userService.getCountOfUsersByCountry();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(countOfUsersByCountry);
     }
 
 

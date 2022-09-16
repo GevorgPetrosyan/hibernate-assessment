@@ -6,6 +6,8 @@ import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.mapper.UserToResponseMapper;
+import com.egs.hibernate.model.UserCountryResponseModel;
 import com.egs.hibernate.model.UserFullResponseModel;
 import com.egs.hibernate.model.UserResponseModel;
 import com.egs.hibernate.repository.CountryRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+
+    private final UserToResponseMapper mapper;
 
     @Override
     /**
@@ -49,7 +54,7 @@ public class UserServiceImpl implements UserService {
          * So I modify this part of code by creating native sql query in UserRepository
          */
 
-        String userName = userRepository.getUserNameFindFirstByOrderByCreatedDesc();
+        String userName = userRepository.getUserNameFindFirstByOrderByIdDesc();
         int i = 1;
         if (userName != null) {
             String s = userName.split("_")[1];
@@ -73,6 +78,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Retrieve username, firstName, lastName and birthdate of User
+     */
     public Page<UserResponseModel> getUserResponseModel(Integer pageNumber, Integer pageSize, String sortBy){
 
         Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
@@ -80,12 +88,39 @@ public class UserServiceImpl implements UserService {
         return userRepository.getUserResponseModel(paging);
     }
 
+    /**
+     * Retrieve username, firstName, lastName, birthdate, addresses and phoneNumbers of User
+     */
     @Override
     public Slice<UserFullResponseModel> getUserFullResponseModel(Integer pageNumber, Integer pageSize, String sortBy) {
 
-        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+        final Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        final Slice<User> users = userRepository.getUserFullResponseModel(pageable);
 
-        return userRepository.getUserFullResponseModel(paging);
+        final List<UserFullResponseModel> responseModelList = users.stream().map(
+                (user -> {
+            final Set<Address> addresses = user.getAddresses();
+            final Set<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
+            return new UserFullResponseModel(
+                    user.getUsername(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getBirthdate(),
+                    mapper.mapToAddressResponseModelSet(addresses),
+                    mapper.mapToPhoneNumberResponseModelSet(phoneNumbers)
+            );
+        })).collect(Collectors.toList());
+
+        return new SliceImpl<>(responseModelList, pageable, users.hasNext());
+    }
+
+    /**
+     * Retrieve count of users by countries and country codes
+     */
+    @Override
+    public List<UserCountryResponseModel> getCountOfUsersByCountry() {
+
+        return userRepository.getCountOfUsersByCountry();
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {

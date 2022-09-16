@@ -1,6 +1,7 @@
 package com.egs.hibernate.service.impl;
 
 import com.egs.hibernate.entity.Country;
+import com.egs.hibernate.model.CountryResponseModel;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +25,14 @@ public class CountryServiceImpl implements CountryService {
                     .map(it -> Country.builder().countryCode(it).displayName(it.getName()).build())
                     .forEach(countryRepository::save);
         }
+    }
+
+    /**
+     * Retrieve countries by user count
+     */
+    @Override
+    public List<CountryResponseModel> getCountryByUserCount() {
+
+        return countryRepository.getCountryByUserCount();
     }
 }
