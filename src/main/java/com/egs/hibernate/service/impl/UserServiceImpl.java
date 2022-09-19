@@ -19,6 +19,8 @@ import com.egs.hibernate.service.UserService;
 import com.egs.hibernate.utils.DBConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -78,24 +80,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void createUser() {
+
         int i = userRepository.findFirstUsernameByMaxId()
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
                 .map(it -> ++it)
-                .orElse(0);
+                .orElse(1);
+
         final String username1 = "username_" + i;
-        User user1 = saveUser(username1);
+        User user1 = userRepository.save(constructUser(username1));
+        userRepository.flush();
+
         log.info("user : {} successfully created", user1.getId());
+
         final String username2 = "username_" + (i + 1);
         final User user2 = constructUser(username2);
-        userRepository.save(user2);
-        throw new RuntimeException("Please help to save user1 !!!");
+
+        Session session = getSession();
+
+        Work work = connection -> {
+            try {
+                userRepository.save(user2);
+                throw new RuntimeException("Please help to save user1 !!!");
+            } catch (RuntimeException e) {
+                connection.rollback();
+                log.info("user : {} is not created", user2.getId());
+            }
+        };
+        session.doWork(work);
+
     }
 
-    public User saveUser(String username) {
-        final User user = constructUser(username);
-        return userRepository.save(user);
+    private Session getSession() {
+        return entityManager.unwrap(Session.class);
     }
 
     @Override
