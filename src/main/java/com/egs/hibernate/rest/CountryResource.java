@@ -1,11 +1,13 @@
 package com.egs.hibernate.rest;
 
+import com.egs.hibernate.response.CountriesWithTenKUsersResponse;
 import com.egs.hibernate.service.CountryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +28,12 @@ public class CountryResource {
         countryService.storeAllCountries();
     }
 
+    @GetMapping("countries")
+    @Operation(summary = "Find countries which have more than 10k users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Received countries which have more than 10k users")})
+    public CountriesWithTenKUsersResponse findCountriesWithTenKUsers() {
+        return countryService.findCountriesWithTenKUsers();
+    }
 
 }

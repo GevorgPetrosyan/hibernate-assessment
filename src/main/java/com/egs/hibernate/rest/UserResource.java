@@ -1,6 +1,5 @@
 package com.egs.hibernate.rest;
 
-
 import com.egs.hibernate.response.UserResponse;
 import com.egs.hibernate.response.UsersCountResponse;
 import com.egs.hibernate.service.UserService;
@@ -47,7 +46,6 @@ public class UserResource {
     }
 
     @GetMapping("count/{code}")
-
     @Operation(summary = "Find Users count by Country Code")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users count collecting by country code has successfully done")})
