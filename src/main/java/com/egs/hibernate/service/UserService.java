@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserService {
     void generateUsers(int count);
 
-    Page<UserResponse> getAllUsers(Integer pageNo, Integer pageSize, String sortBy);
+    Page<UserResponse> getUsersByPage(Integer pageNo, Integer pageSize, String sortBy);
 
     List<CountryCodeResponse> getUsersByCountryCode();
 

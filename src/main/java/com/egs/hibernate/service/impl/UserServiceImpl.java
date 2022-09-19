@@ -7,6 +7,7 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.model.CountryCodeResponse;
+import com.egs.hibernate.model.CountryResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
@@ -75,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Page<UserResponse> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) {
+    public Page<UserResponse> getUsersByPage(Integer pageNo, Integer pageSize, String sortBy) {
 
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         List<UserResponse> pagedResult = userRepository.findAll(paging).stream()
@@ -91,6 +92,7 @@ public class UserServiceImpl implements UserService {
                 "JOIN address AS a ON u.id = a.user.id  " +
                 "JOIN country  AS c ON c.id = a.country.id GROUP BY c.countryCode", CountryCodeResponse.class).getResultList();
     }
+
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
