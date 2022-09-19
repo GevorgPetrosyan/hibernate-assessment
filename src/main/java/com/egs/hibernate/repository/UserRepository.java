@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query(nativeQuery = true, value = "select * from users u order by u.id desc fetch first row ONLY")
-    Optional<User> findLastUser();
+    Optional<User> findFirstByOrderByIdDesc();
+
 }

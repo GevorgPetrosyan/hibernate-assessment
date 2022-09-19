@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -28,18 +26,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
 
-
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        List<User> users = new ArrayList<>();
-        long i = userRepository.findLastUser()
+        int i = userRepository.findFirstByOrderByIdDesc()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
-                .map(Long::valueOf)
-                .map(it -> it + 1L)
-                .orElse(1L);
-        final long terminate = i + count;
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final int terminate = i + count;
         for (; i < terminate; i++) {
             final String username = "username_" + i;
             try {
@@ -48,14 +44,34 @@ public class UserServiceImpl implements UserService {
                 final PhoneNumber phoneNumber = constructPhoneNumber(user);
                 user.setPhoneNumbers(Set.of(phoneNumber));
                 user.setAddresses(addresses);
-                users.add(user);
+                userRepository.save(user);
             } catch (final Exception e) {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
-        userRepository.saveAll(users);
     }
 
+    @Override
+    public void createUser() {
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final String username1 = "username_" + i;
+        User user1 = saveUser(username1);
+        log.info("user : {} successfully created", user1.getId());
+        final String username2 = "username_" + (i + 1);
+        final User user2 = constructUser(username2);
+        userRepository.save(user2);
+        throw new RuntimeException("Please help to save user1 !!!");
+    }
+
+    public User saveUser(String username) {
+        final User user = constructUser(username);
+        return userRepository.save(user);
+    }
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
@@ -75,5 +91,4 @@ public class UserServiceImpl implements UserService {
                 .lastName(person.getLastName()).username(username)
                 .birthdate(person.getBirthdate().toLocalDate()).build();
     }
-
 }
