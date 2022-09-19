@@ -34,5 +34,4 @@ public interface UserRepository extends JpaRepository<User, Long>, UserSearchRep
             "HAVING count(u) > 10000" +
             "ORDER BY c.countryCode ")
     List<String> getCountryWithManyUsers();
-
 }

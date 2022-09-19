@@ -78,6 +78,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void createUser() {
+        int i = userRepository.findFirstUsernameByMaxId()
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final String username1 = "username_" + i;
+        User user1 = saveUser(username1);
+        log.info("user : {} successfully created", user1.getId());
+        final String username2 = "username_" + (i + 1);
+        final User user2 = constructUser(username2);
+        userRepository.save(user2);
+        throw new RuntimeException("Please help to save user1 !!!");
+    }
+
+    public User saveUser(String username) {
+        final User user = constructUser(username);
+        return userRepository.save(user);
+    }
+
+    @Override
     public Page<UserResponse> getAll(final UserSearchRequest request) {
 
         if (request.getPageNo() < 1) {

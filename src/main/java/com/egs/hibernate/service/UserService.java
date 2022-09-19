@@ -8,7 +8,10 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface UserService {
+
     void generateUsers(int count);
+
+    void createUser();
 
     Page<UserResponse> getAll(final UserSearchRequest request);
 
