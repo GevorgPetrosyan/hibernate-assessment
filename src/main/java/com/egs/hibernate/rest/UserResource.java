@@ -65,4 +65,12 @@ public class UserResource {
 
 
 
+    @Operation(summary = "Create user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User has been successfully created")})
+    @PostMapping
+    public void createUser(){
+        userService.createUser();
+    }
+
 }

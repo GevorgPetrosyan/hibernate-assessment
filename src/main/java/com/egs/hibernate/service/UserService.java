@@ -16,4 +16,6 @@ public interface UserService {
     Slice<UserFullResponseModel> getUserFullResponseModel(Integer pageNumber, Integer pageSize, String sortBy);
 
     List<UserCountryResponseModel> getCountOfUsersByCountry();
+
+    void createUser();
 }
