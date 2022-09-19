@@ -11,7 +11,7 @@ public interface UserService {
 
     void createUser();
 
-    Page<UserResponse> getAllUsers(Integer pageNo, Integer pageSize, String sortBy);
+    Page<UserResponse> getUsersByPage(Integer pageNo, Integer pageSize, String sortBy);
 
     List<CountryCodeResponse> getUsersByCountryCode();
 

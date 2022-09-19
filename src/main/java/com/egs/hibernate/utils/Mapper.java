@@ -4,10 +4,8 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
-import com.egs.hibernate.model.AddressResponse;
-import com.egs.hibernate.model.CountryResponse;
-import com.egs.hibernate.model.PhoneNumberResponse;
-import com.egs.hibernate.model.UserResponse;
+import com.egs.hibernate.model.*;
+import com.neovisionaries.i18n.CountryCode;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

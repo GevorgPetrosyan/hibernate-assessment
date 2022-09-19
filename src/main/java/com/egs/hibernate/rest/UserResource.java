@@ -1,6 +1,7 @@
 package com.egs.hibernate.rest;
 
 import com.egs.hibernate.model.CountryCodeResponse;
+import com.egs.hibernate.model.CountryResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,11 +43,11 @@ public class UserResource {
 
 
     @GetMapping("allUsers")
-    public ResponseEntity<Page<UserResponse>> getAllUsers(
+    public ResponseEntity<Page<UserResponse>> getUsersByPage(
             @RequestParam(defaultValue = "2") Integer pageNo,
             @RequestParam(defaultValue = "5") Integer pageSize,
             @RequestParam(defaultValue = "id") String sortBy) {
-        Page<UserResponse> list = userService.getAllUsers(pageNo, pageSize, sortBy);
+        Page<UserResponse> list = userService.getUsersByPage(pageNo, pageSize, sortBy);
         return new ResponseEntity<Page<UserResponse>>(list, new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -54,7 +55,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Count of users by the country code have been successfully taken")})
     @GetMapping("countOfUsers")
-    public ResponseEntity<List<CountryCodeResponse>> getCountOfUsersByCountryCode(){
+    public ResponseEntity<List<CountryCodeResponse>> getCountOfUsersByCountryCode() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getUsersByCountryCode());

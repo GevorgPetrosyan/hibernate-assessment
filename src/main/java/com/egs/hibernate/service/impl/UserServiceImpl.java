@@ -7,6 +7,7 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.model.CountryCodeResponse;
+import com.egs.hibernate.model.CountryResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Page<UserResponse> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) {
+    public Page<UserResponse> getUsersByPage(Integer pageNo, Integer pageSize, String sortBy) {
 
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         List<UserResponse> pagedResult = userRepository.findAll(paging).stream()
@@ -134,4 +135,5 @@ public class UserServiceImpl implements UserService {
                 .lastName(person.getLastName()).username(username)
                 .birthdate(person.getBirthdate().toLocalDate()).build();
     }
+
 }
