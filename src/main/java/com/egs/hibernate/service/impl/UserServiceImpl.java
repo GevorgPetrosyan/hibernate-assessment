@@ -29,11 +29,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByCreatedDesc()
+        int i = userRepository.findFirstByOrderByIdDesc()
                 .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
-                .map(it->++it)
+                .map(it -> ++it)
                 .orElse(0);
         final int terminate = i + count;
         for (; i < terminate; i++) {
@@ -51,16 +51,40 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void createUser() {
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final String username1 = "username_" + i;
+        User user1 = saveUser(username1);
+        log.info("user : {} successfully created", user1.getId());
+        final String username2 = "username_" + (i + 1);
+        final User user2 = constructUser(username2);
+        userRepository.save(user2);
+        throw new RuntimeException("Please help to save user1 !!!");
+    }
+
+    public User saveUser(String username) {
+        final User user = constructUser(username);
+        return userRepository.save(user);
+    }
+
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
+
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
                         .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
+
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())
