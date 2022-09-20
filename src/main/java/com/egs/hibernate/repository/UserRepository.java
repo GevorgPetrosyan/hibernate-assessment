@@ -10,6 +10,7 @@ import java.util.Optional;
 @Transactional
 public interface UserRepository extends JpaRepository<BaseUser, Long> {
 
+
     @Query(nativeQuery = true, value = "select * from users u order by u.id desc fetch first row ONLY")
     Optional<BaseUser> findLastUser();
 

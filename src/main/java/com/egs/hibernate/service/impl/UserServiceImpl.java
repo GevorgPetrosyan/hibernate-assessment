@@ -42,12 +42,15 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+
     private final EntityManager entityManager;
     private final UserMapper userMapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
         List<BaseUser> users = new ArrayList<>();
         long i = userRepository.findLastUser()
                 .map(BaseUser::getUsername)
@@ -58,6 +61,10 @@ public class UserServiceImpl implements UserService {
         final long terminate = i + count;
         List<Country> countries = countryRepository.findAll();
 
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final int terminate = i + count;
         for (; i < terminate; i++) {
             final String username = "username_" + i;
             try {
@@ -68,14 +75,34 @@ public class UserServiceImpl implements UserService {
                 final PhoneNumber phoneNumber = constructPhoneNumber();
                 user.setPhoneNumbers(Set.of(phoneNumber));
                 user.setAddresses(addresses);
-                users.add(user);
+                userRepository.save(user);
             } catch (final Exception e) {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
-        userRepository.saveAll(users);
     }
 
+    @Override
+    public void createUser() {
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final String username1 = "username_" + i;
+        User user1 = saveUser(username1);
+        log.info("user : {} successfully created", user1.getId());
+        final String username2 = "username_" + (i + 1);
+        final User user2 = constructUser(username2);
+        userRepository.save(user2);
+        throw new RuntimeException("Please help to save user1 !!!");
+    }
+
+    public User saveUser(String username) {
+        final User user = constructUser(username);
+        return userRepository.save(user);
+    }
     @Override
     @Transactional
     public List<UserResponse> findAll(int page, int size, String direction, String fieldName) {

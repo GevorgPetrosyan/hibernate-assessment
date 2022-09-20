@@ -9,6 +9,8 @@ public interface UserService {
 
     void generateUsers(int count);
 
+    void createUser();
+
     List<UserResponse> findAll(int page, int size, String direction, String fieldName);
 
     UsersCountResponse findUsersCountByCode(String code);
