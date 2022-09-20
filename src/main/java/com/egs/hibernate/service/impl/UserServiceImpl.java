@@ -8,6 +8,7 @@ import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
+import com.egs.hibernate.response.CountryCodeResponse;
 import com.egs.hibernate.response.ResponseUser;
 import com.egs.hibernate.service.UserService;
 import com.egs.hibernate.utils.Mapper;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -24,13 +24,15 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static com.egs.hibernate.utils.Constants.USERS_TABLE_PAGE_MAX_SIZE;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final Mapper mapper;
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final Mapper mapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -55,6 +57,20 @@ public class UserServiceImpl implements UserService {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
+    }
+
+    @Override
+    public Page<ResponseUser> getByPages(Integer pageNo, Integer pageSize, String sortBy) {
+        if (pageNo < 1) {
+            return new PageImpl<>(new ArrayList<>());
+        }
+        if (pageSize > USERS_TABLE_PAGE_MAX_SIZE) {
+            pageSize = USERS_TABLE_PAGE_MAX_SIZE;
+        }
+        Pageable paging = PageRequest.of(pageNo - 1, pageSize, Sort.by(sortBy));
+
+        List<ResponseUser> pagedResult = userRepository.findAll(paging).stream().map(mapper::userToResponse).collect(Collectors.toList());
+        return new PageImpl<>(pagedResult);
     }
 
     @Override
@@ -105,6 +121,10 @@ public class UserServiceImpl implements UserService {
         return new PageImpl<>(pagedResult);
     }
 
+    @Override
+    public List<CountryCodeResponse> getUsersCountByCountryCode() {
+        return userRepository.findUsersByCountryCode();
+    }
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
