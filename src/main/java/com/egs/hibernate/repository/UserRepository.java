@@ -18,7 +18,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAll(Pageable pageable);
 
-    @Query(value = "SELECT new com.egs.hibernate.dto.UsersCountDTO(c.countryCode , count(u.id)) " +
+    @Query(value = "SELECT new com.egs.hibernate.dto.UsersCountDTO(c.countryCode , count(DISTINCT u.id)) " +
             "FROM users u " +
             "JOIN address a ON u.id = a.user.id " +
             "JOIN country c ON c.id = a.country.id " +
@@ -31,8 +31,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
             "JOIN address a ON u.id = a.user.id " +
             "JOIN country c ON c.id = a.country.id " +
             "GROUP BY c.countryCode " +
-            "HAVING count(u.id) > 1000 "
-            )
+            "HAVING count(u.id) > 10000")
     List<String> usersCluster();
 
 }
