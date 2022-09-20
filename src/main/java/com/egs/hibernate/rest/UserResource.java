@@ -4,6 +4,7 @@ package com.egs.hibernate.rest;
 import com.egs.hibernate.dto.response.UserCountByCountryCode;
 import com.egs.hibernate.dto.response.UserResponse;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -44,5 +45,13 @@ public class UserResource {
     @GetMapping("/countryCode/{countryCode}")
     public UserCountByCountryCode findAllUsersByCountryCode(@PathVariable String countryCode) {
         return userService.findAllUsersByCountryId(countryCode);
+    }
+
+    @Operation(summary = "Find all users count by CountryCode")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users count have been returned successfully")})
+    @GetMapping("/countryCodes")
+    public List<CountryCode> findAllCountriesByUserCount() {
+        return userService.findAllCountriesByUserCount();
     }
 }

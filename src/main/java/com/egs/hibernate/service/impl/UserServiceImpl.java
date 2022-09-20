@@ -16,6 +16,7 @@ import com.egs.hibernate.mapper.UserMapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -95,6 +96,16 @@ public class UserServiceImpl implements UserService {
         BigInteger result = (BigInteger) query.getSingleResult();
 
         return new UserCountByCountryCode(code, result.intValue());
+    }
+
+    @Override
+    public List<CountryCode> findAllCountriesByUserCount() {
+        Query query = entityManager.createNativeQuery("select country.country_code from users " +
+                "left join address  on users.id = address.user_id " +
+                "left join country  on country.id =address.country_id " +
+                "where address.country_id is not null group by country_code " +
+                "having count(users.id) > 10000");
+        return (List<CountryCode>) query.getResultList();
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
