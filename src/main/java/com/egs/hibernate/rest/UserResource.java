@@ -51,7 +51,7 @@ public class UserResource {
 
 @Operation(summary = "Show the countries with the highest concentration of users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Users count list have been successfully shown")})
+            @ApiResponse(responseCode = "200", description = "Counties list have been successfully shown")})
     @GetMapping("cluster")
     public ResponseEntity<List<String>> usersCluster(){
         return ResponseEntity.ok(userService.usersCluster());
