@@ -6,6 +6,7 @@ import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.dto.UserDTO;
 import com.egs.hibernate.dto.UsersCountDTO;
 import com.egs.hibernate.entity.Address;
+import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.mapper.Mapper;
@@ -67,13 +68,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UsersCountDTO> usersCountByCountryCode() {
         log.info("Users count by country code method start work!");
-        Mapper mapper = new Mapper();
-        return mapper.mapToDTOList(userRepository.usersCountByCountryCode(), UsersCountDTO.class);
+        return userRepository.usersCountByCountryCode();
     }
 
     @Override
     public List<String> usersCluster() {
-        log.info("Users count by country code method start work!");
+        log.info("Country list by users cluster method start work!");
         return userRepository.usersCluster();
     }
 
@@ -83,9 +83,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private Set<Address> constructAddresses(User user) {
+        Country country = countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null);
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
-                        .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
+                        .country(country)
                         .user(user).build()).collect(Collectors.toSet());
     }
 
