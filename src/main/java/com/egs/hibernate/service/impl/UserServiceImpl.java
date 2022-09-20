@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserByCountryDto> getCountOfUsersByCountry() {
 
-        String select = "SELECT new com.egs.hibernate.dto.UserByCountryDto(c.countryCode, count(u.id)) " +
+        String select = "SELECT DISTINCT new com.egs.hibernate.dto.UserByCountryDto(c.countryCode, count(u.id)) " +
                 "FROM users u join address a on u.id = a.user.id " +
                 "join country c on c.id = a.country.id group by c.countryCode";
 
