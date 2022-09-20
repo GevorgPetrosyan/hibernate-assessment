@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
     private final Mapper mapper;
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
         long start = System.currentTimeMillis();
 
@@ -121,19 +120,16 @@ public class UserServiceImpl implements UserService {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))
                 .user(user).build();
     }
-
     private Set<Address> constructAddresses(User user) {
         return RandomAddress.get().listOf(2).stream()
                 .map(fakeAddress -> Address.builder().city(fakeAddress.getCity()).postalCode(fakeAddress.getPostalCode())
                         .country(countryRepository.findById(ThreadLocalRandom.current().nextLong(1L, 272L)).orElse(null))
                         .user(user).build()).collect(Collectors.toSet());
     }
-
     private static User constructUser(String username) {
         final Person person = RandomPerson.get().next();
         return User.builder().firstName(person.getFirstName())
                 .lastName(person.getLastName()).username(username)
                 .birthdate(person.getBirthdate().toLocalDate()).build();
     }
-
 }

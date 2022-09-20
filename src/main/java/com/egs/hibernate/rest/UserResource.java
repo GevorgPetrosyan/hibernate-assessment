@@ -29,7 +29,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been successfully generated")})
     @PostMapping("generate/{count}")
-    public void initiateCountries(@PathVariable int count){
+    public void initiateCountries(@PathVariable int count) {
         userService.generateUsers(count);
     }
 
