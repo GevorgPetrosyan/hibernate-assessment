@@ -1,5 +1,6 @@
 package com.egs.hibernate.rest;
 
+import com.egs.hibernate.response.CountryCodeResponse;
 import com.egs.hibernate.response.ResponseUser;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user/")
@@ -37,7 +40,15 @@ public class UserResource {
             @RequestParam(defaultValue = "1") Integer pageNo,
             @RequestParam(defaultValue = "200") Integer pageSize,
             @RequestParam(defaultValue = "username") String sortBy) {
-        Page<ResponseUser> list = userService.getAll(pageNo, pageSize, sortBy);
+        Page<ResponseUser> list = userService.getByPages(pageNo, pageSize, sortBy);
         return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")})
+    @GetMapping("count")
+    public ResponseEntity<List<CountryCodeResponse>> getByCountryCode() {
+        List<CountryCodeResponse> countOfUsersByCountry = userService.getUsersCountByCountryCode();
+        return ResponseEntity.status(HttpStatus.OK).body(countOfUsersByCountry);
     }
 }
