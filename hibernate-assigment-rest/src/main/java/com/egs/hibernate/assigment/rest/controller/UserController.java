@@ -50,4 +50,12 @@ public class UserController {
             @PathVariable Long validateCount) {
         return ResponseEntity.ok(userService.getUsersCountByCountryCode(validateCount));
     }
+
+    @Operation(summary = "Create user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User has been successfully created")})
+    @PostMapping
+    public void createUser(){
+        userService.createUser();
+    }
 }

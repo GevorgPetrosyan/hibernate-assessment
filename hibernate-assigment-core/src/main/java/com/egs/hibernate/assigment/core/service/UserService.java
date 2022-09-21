@@ -11,4 +11,6 @@ public interface UserService {
     List<UserResponse> findAll();
 
     List<CountryCodesAndCountOfUsersResponse> getUsersCountByCountryCode(Long validateCount);
+
+    void createUser();
 }

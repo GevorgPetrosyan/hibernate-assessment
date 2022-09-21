@@ -18,12 +18,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.LockModeType;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -42,8 +45,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Lock(value = LockModeType.PESSIMISTIC_WRITE)
     public void generateUsers(final int count) {
-        int i = userRepository.findFirstByOrderByCreatedDesc()
-                .map(User::getUsername)
+        int i = userRepository.findFirstByOrderByIdDesc()                .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
                 .map(it->++it)
@@ -62,6 +64,34 @@ public class UserServiceImpl implements UserService {
                 log.warn("User with username: {} can't be created. {}", username, e.getMessage());
             }
         }
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void createUser() {
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final String username1 = "username_" + i;
+        User user1 = saveUser(username1);
+        log.info("user with ID: {} successfully created", user1.getId());
+        final String username2 = "username_" + (i + 1);
+        saveUser(username2);
+        log.info("user with ID: {} successfully created", user1.getId());
+    }
+
+    public User saveUser(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()){
+            throw new EntityExistsException(
+                    "User with userName: " + username + " already exists"
+            );
+        }
+        final User user = constructUser(username);
+        return userRepository.save(user);
     }
 
     @Override
