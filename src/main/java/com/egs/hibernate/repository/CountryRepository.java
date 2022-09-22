@@ -1,7 +1,6 @@
 package com.egs.hibernate.repository;
 
 import com.egs.hibernate.entity.Country;
-import com.egs.hibernate.response.CountryCodeResponse;
 import com.egs.hibernate.response.ResponseCountry;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
