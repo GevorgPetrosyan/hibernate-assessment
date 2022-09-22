@@ -2,7 +2,6 @@ package com.egs.hibernate.service.impl;
 
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.repository.CountryRepository;
-import com.egs.hibernate.response.CountryCodeResponse;
 import com.egs.hibernate.response.ResponseCountry;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
