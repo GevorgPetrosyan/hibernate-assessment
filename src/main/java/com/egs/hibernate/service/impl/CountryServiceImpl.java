@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,8 +28,8 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<String> getCountryByUserCount() {
-        List<String> countries = countryRepository.getCountriesByUserCount();
-        return new ArrayList<>(countries);
+    public List<CountryCode> getCountryByUserCount() {
+
+        return countryRepository.getCountriesByUserCount();
     }
 }

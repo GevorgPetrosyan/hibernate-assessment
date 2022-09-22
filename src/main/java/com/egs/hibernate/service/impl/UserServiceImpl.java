@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,6 +89,7 @@ public class UserServiceImpl implements UserService {
         return countUsersByCountry;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void createUser() {
         int i = userRepository.findFirstByOrderByIdDesc()
@@ -105,6 +107,7 @@ public class UserServiceImpl implements UserService {
         throw new RuntimeException("Please help to save user1 !!!");
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public User saveUser(String username) {
         final User user = constructUser(username);
         return userRepository.save(user);

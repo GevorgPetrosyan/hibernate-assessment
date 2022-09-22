@@ -1,6 +1,7 @@
 package com.egs.hibernate.rest;
 
 import com.egs.hibernate.service.CountryService;
+import com.neovisionaries.i18n.CountryCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,7 +30,7 @@ public class CountryResource {
     }
 
     @GetMapping
-    public List<String> getCountries(){
+    public List<CountryCode> getCountries(){
         return countryServiceImpl.getCountryByUserCount();
     }
 }
