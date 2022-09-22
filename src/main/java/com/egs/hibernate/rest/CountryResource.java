@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Country Resource", description = "The Country API with documentation annotations")
 public class CountryResource {
-    private final CountryService countryServiceImpl;
+    private final CountryService countryService;
 
     @PostMapping("init")
 
@@ -23,6 +23,6 @@ public class CountryResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Countries initialization is successfully done")})
     public void initiateCountries() {
-        countryServiceImpl.storeAllCountries();
+        countryService.storeAllCountries();
     }
 }

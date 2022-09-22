@@ -9,4 +9,5 @@ public interface UserDto {
   String getLastName();
 
   String getBirthdate();
+
 }

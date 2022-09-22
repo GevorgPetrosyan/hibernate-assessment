@@ -1,13 +1,13 @@
 package com.egs.hibernate.entity;
 
-import lombok.*;
-
-import javax.persistence.CascadeType;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.time.LocalDate;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "users")
 @NoArgsConstructor
@@ -28,11 +28,5 @@ public class User extends BaseEntity {
 
     @Column(name = "birthdate")
     private LocalDate birthdate;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<PhoneNumber> phoneNumbers;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Address> addresses;
 
 }

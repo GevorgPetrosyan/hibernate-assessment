@@ -1,5 +1,6 @@
 package com.egs.hibernate.repository;
 
+import com.egs.hibernate.dto.UserByCountryDto;
 import com.egs.hibernate.dto.UserDto;
 import com.egs.hibernate.entity.User;
 import java.util.List;

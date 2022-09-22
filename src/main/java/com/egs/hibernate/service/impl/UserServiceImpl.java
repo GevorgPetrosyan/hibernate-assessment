@@ -3,30 +3,35 @@ package com.egs.hibernate.service.impl;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.egs.hibernate.dto.UserByCountryDto;
 import com.egs.hibernate.dto.UserDto;
+import com.egs.hibernate.dto.response.UserByCountryResponse;
+import com.egs.hibernate.dto.response.UserResponse;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.mapper.UserMapper;
+import com.egs.hibernate.repository.AddressRepository;
 import com.egs.hibernate.repository.CountryRepository;
+import com.egs.hibernate.repository.PhoneNumberRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PagedListHolder;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +41,10 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final CountryRepository countryRepository;
   private List<Country> countries;
+  private final UserMapper userMapper;
+  private final AddressRepository addressRepository;
+  private final PhoneNumberRepository phoneNumberRepository;
+  private final EntityManager entityManager;
 
   @Override
   @Transactional(propagation = Propagation.SUPPORTS)
@@ -55,8 +64,12 @@ public class UserServiceImpl implements UserService {
         final User user = constructUser(username);
         final Set<Address> addresses = constructAddresses(user);
         final PhoneNumber phoneNumber = constructPhoneNumber(user);
-        user.setPhoneNumbers(Set.of(phoneNumber));
-        user.setAddresses(addresses);
+        addresses.forEach(address -> {
+          address.setUser(user);
+          addressRepository.save(address);
+        });
+        phoneNumber.setUser(user);
+        phoneNumberRepository.save(phoneNumber);
         users.add(user);
       } catch (final Exception e) {
         log.warn("User with username: {} can't be created. {}", username, e.getMessage());
@@ -103,5 +116,25 @@ public class UserServiceImpl implements UserService {
   public List<UserDto> findAllUsers(int page, int size, String field) {
     PageRequest pageRequest = PageRequest.of(page, size, Sort.by(field));
     return userRepository.findAllUsers(pageRequest);
+  }
+
+  @Override
+  public List<UserResponse> findAll(int page, int size) {
+    PageRequest pageRequest = PageRequest.of(page, size);
+    return userRepository.findAll(pageRequest)
+        .stream()
+        .map(userMapper::toResponse)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<UserByCountryDto> findAllGroupByCountryCode() {
+    Session session = entityManager.unwrap(Session.class);
+    Query query = session
+        .createQuery("select c.countryCode as countryCode, count(distinct a.user.id) as count"
+            + " from address a left join users u on  u.id = a.user.id left join country c on a.country.id = c.id "
+            + " where a.country.id is not null "
+            + " group by c.countryCode");
+    return (List<UserByCountryDto>) query.list();
   }
 }
