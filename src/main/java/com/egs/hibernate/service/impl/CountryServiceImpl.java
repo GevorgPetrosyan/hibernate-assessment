@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void storeAllCountries() {
@@ -23,5 +25,16 @@ public class CountryServiceImpl implements CountryService {
                     .map(it -> Country.builder().countryCode(it.getAlpha2()).displayName(it.getName()).build())
                     .forEach(countryRepository::save);
         }
+    }
+
+    @Override
+    public List<String> getAllCountryCodes() {
+        return countryRepository.getAllCountryCode();
+    }
+
+    @Override
+    public String getCountryCode(final String displayName) {
+
+        return countryRepository.getCountryCode(displayName);
     }
 }
