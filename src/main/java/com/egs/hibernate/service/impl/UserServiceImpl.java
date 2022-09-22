@@ -67,13 +67,11 @@ public class UserServiceImpl implements UserService {
                 .orElse(0);
         final String username1 = "username_" + i;
         User user1 = s.saveUser(username1);
-        long g = user1.getId();
         log.info("user : {} successfully created", user1.getId());
         final String username2 = "username_" + (i + 1);
         final User user2 = constructUser(username2);
         userRepository.save(user2);
-        log.info("user : {} successfully created", g);
-        throw new RuntimeException("Please help to save user1 !!!");
+        throw new RuntimeException("User2 dont saved !!!");
     }
 
     @Override
