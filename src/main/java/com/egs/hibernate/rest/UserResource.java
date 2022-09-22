@@ -32,14 +32,6 @@ public class UserResource {
         userService.generateUsers(count);
     }
 
-    @Operation(summary = "Create user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User has been successfully created")})
-    @PostMapping
-    public void createUser(){
-        userService.createUser();
-    }
-
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200")})
     @GetMapping("all")
@@ -57,5 +49,12 @@ public class UserResource {
     public ResponseEntity<List<CountryCodeResponse>> getByCountryCode() {
         List<CountryCodeResponse> countOfUsersByCountry = userService.getUsersCountByCountryCode();
         return ResponseEntity.status(HttpStatus.OK).body(countOfUsersByCountry);
+    }
+    @Operation(summary = "Create user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User has been successfully created")})
+    @PostMapping
+    public void createUser(){
+        userService.createUser();
     }
 }

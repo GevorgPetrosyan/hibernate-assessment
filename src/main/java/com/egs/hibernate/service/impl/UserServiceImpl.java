@@ -30,12 +30,13 @@ import static com.egs.hibernate.utils.Constants.USERS_TABLE_PAGE_MAX_SIZE;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
     private final Mapper mapper;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void generateUsers(final int count) {
         int i = userRepository.findFirstByOrderByIdDescCreatedDesc()
                 .map(User::getUsername)
@@ -71,6 +72,11 @@ public class UserServiceImpl implements UserService {
 
         List<ResponseUser> pagedResult = userRepository.findAll(paging).stream().map(mapper::userToResponse).collect(Collectors.toList());
         return new PageImpl<>(pagedResult);
+    }
+
+    @Override
+    public List<CountryCodeResponse> getUsersCountByCountryCode() {
+        return userRepository.findUsersByCountryCode();
     }
 
     @Override
@@ -119,11 +125,6 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(pagedResult);
-    }
-
-    @Override
-    public List<CountryCodeResponse> getUsersCountByCountryCode() {
-        return userRepository.findUsersByCountryCode();
     }
 
     private static PhoneNumber constructPhoneNumber(User user) {
