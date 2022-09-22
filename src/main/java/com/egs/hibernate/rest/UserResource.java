@@ -38,7 +38,7 @@ public class UserResource {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "50") Integer pageSize,
             @RequestParam(defaultValue = "id") String columnName) {
-        return ResponseEntity.ok(userService.usersFilter(pageNo, pageSize, columnName));
+        return ResponseEntity.ok(userService.usersSort(pageNo, pageSize, columnName));
     }
 
     @Operation(summary = "Show users count by country code")
@@ -49,13 +49,14 @@ public class UserResource {
         return ResponseEntity.ok(userService.usersCountByCountryCode());
     }
 
-@Operation(summary = "Show the countries with the highest concentration of users")
+    @Operation(summary = "Show the countries with the highest concentration of users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Counties list have been successfully shown")})
     @GetMapping("cluster")
     public ResponseEntity<List<String>> usersCluster(){
         return ResponseEntity.ok(userService.usersCluster());
     }
+
     @Operation(summary = "Create user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been successfully created")})
