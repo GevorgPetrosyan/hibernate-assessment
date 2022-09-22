@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final UserSaveService s;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -57,12 +58,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void createUser() {
+        int i = userRepository.findUserByMaxID()
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
+        final String username1 = "username_" + i;
+        User user1 = s.saveUser(username1);
+        long g = user1.getId();
+        log.info("user : {} successfully created", user1.getId());
+        final String username2 = "username_" + (i + 1);
+        final User user2 = constructUser(username2);
+        userRepository.save(user2);
+        log.info("user : {} successfully created", g);
+        throw new RuntimeException("Please help to save user1 !!!");
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public Page<UserDTO> usersFilter(Integer pageNo, Integer pageSize, String columnName) {
+    public Page<UserDTO> usersSort(Integer pageNo, Integer pageSize, String columnName) {
         log.info("Users filter method started! Attempt to show: {} users sort by: {} ", pageSize, columnName);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(columnName));
         Mapper mapper = new Mapper();
-        return new PageImpl<>(mapper.mapToDTOList(userRepository.findAll(paging) , UserDTO.class));
+        return new PageImpl<>(mapper.mapToDTOList(userRepository.findAll(paging), UserDTO.class));
     }
 
     @Override
