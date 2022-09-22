@@ -11,20 +11,16 @@ import com.egs.hibernate.entity.User;
  */
 public class Mapper {
 
-    private Mapper() {
-    }
-
-    public static UserDto userEntityToDto(User user) {
+    public UserDto userEntityToDto(User user) {
         UserDto userDto = new UserDto();
-
         AddressDto addressDto = new AddressDto();
 
+        addressDto.setCity(user.getAddresses().stream().iterator().next().getCity());
         addressDto.setStreet(user.getAddresses().stream().iterator().next().getStreet());
         addressDto.setAddress_line_1(user.getAddresses().stream().iterator().next().getAddressLine1());
         addressDto.setAddress_line_2(user.getAddresses().stream().iterator().next().getAddressLine2());
-        addressDto.setCity(user.getAddresses().stream().iterator().next().getCity());
         addressDto.setPostalCode(user.getAddresses().stream().iterator().next().getPostalCode());
-        addressDto.setCountry(user.getAddresses().stream().iterator().next().getCountry().getCountryCode().toString());
+        addressDto.setCountry(user.getAddresses().stream().iterator().next().getCountry().getCountryCode());
 
         PhoneNumberDto phoneNumberDto = new PhoneNumberDto();
         phoneNumberDto.setPhoneNumber(user.getPhoneNumbers().stream().iterator().next().getPhoneNumber());
@@ -35,15 +31,6 @@ public class Mapper {
         userDto.setBirthdate(user.getBirthdate());
         userDto.setAddress(addressDto);
         userDto.setPhoneNumber(phoneNumberDto);
-
-//        userDto.setStreet(user.getAddresses().stream().iterator().next().getStreet());
-//        userDto.setAddress_line_1(user.getAddresses().stream().iterator().next().getAddressLine1());
-//        userDto.setAddress_line_2(user.getAddresses().stream().iterator().next().getAddressLine2());
-//        userDto.setCity(user.getAddresses().stream().iterator().next().getCity());
-//        userDto.setPostalCode(user.getAddresses().stream().iterator().next().getPostalCode());
-//        userDto.setCountry(user.getAddresses().stream().iterator().next().getCountry().getCountryCode());
-//
-//        userDto.setPhoneNumber(user.getPhoneNumbers().stream().iterator().next().getPhoneNumber());
 
         return userDto;
     }

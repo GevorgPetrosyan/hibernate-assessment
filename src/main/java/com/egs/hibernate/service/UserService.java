@@ -11,4 +11,6 @@ public interface UserService {
     List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy);
 
     List<UserByCountryDto> getCountOfUsersByCountry();
+
+    void createUser();
 }

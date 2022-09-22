@@ -1,5 +1,6 @@
 package com.egs.hibernate.dto;
 
+import com.neovisionaries.i18n.CountryCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,5 @@ public class AddressDto implements Serializable {
     private String address_line_1;
     private String address_line_2;
     private String postalCode;
-    private String country;
+    private CountryCode country;
 }
