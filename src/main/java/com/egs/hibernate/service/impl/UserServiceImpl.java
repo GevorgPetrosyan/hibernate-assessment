@@ -18,7 +18,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<ResponseUser> getByPages(Integer pageNo, Integer pageSize, String sortBy) {
         if (pageNo < 1) {
-            return new PageImpl<>(new ArrayList<>());
+            return new PageImpl<>(Collections.emptyList());
         }
         if (pageSize > USERS_TABLE_PAGE_MAX_SIZE) {
             pageSize = USERS_TABLE_PAGE_MAX_SIZE;
