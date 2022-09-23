@@ -7,12 +7,11 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.model.CountryCodeResponse;
-import com.egs.hibernate.model.CountryResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
+import com.egs.hibernate.service.UserSavingService;
 import com.egs.hibernate.service.UserService;
-import lombok.RequiredArgsConstructor;
 import com.egs.hibernate.utils.Mapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -28,10 +27,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserSavingService savingUsers;
     private final CountryRepository countryRepository;
     private final Mapper mapper;
 
@@ -39,9 +38,10 @@ public class UserServiceImpl implements UserService {
     private EntityManager entityManager;
 
     public UserServiceImpl(UserRepository userRepository,
-                           CountryRepository countryRepository,
+                           UserSavingService saveUser, CountryRepository countryRepository,
                            Mapper mapper) {
         this.userRepository = userRepository;
+        this.savingUsers = saveUser;
         this.countryRepository = countryRepository;
         this.mapper = mapper;
     }
@@ -95,6 +95,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void createUser() {
         int i = userRepository.findFirstByOrderByIdDesc()
                 .map(User::getUsername)
@@ -103,7 +104,8 @@ public class UserServiceImpl implements UserService {
                 .map(it -> ++it)
                 .orElse(0);
         final String username1 = "username_" + i;
-        User user1 = saveUser(username1);
+        final User user1 = constructUser(username1);
+        savingUsers.saveUser(user1);
         log.info("user : {} successfully created", user1.getId());
         final String username2 = "username_" + (i + 1);
         final User user2 = constructUser(username2);
@@ -111,10 +113,6 @@ public class UserServiceImpl implements UserService {
         throw new RuntimeException("Please help to save user1 !!!");
     }
 
-    public User saveUser(String username) {
-        final User user = constructUser(username);
-        return userRepository.save(user);
-    }
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))

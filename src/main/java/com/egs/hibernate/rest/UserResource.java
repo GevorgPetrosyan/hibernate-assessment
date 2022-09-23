@@ -1,7 +1,6 @@
 package com.egs.hibernate.rest;
 
 import com.egs.hibernate.model.CountryCodeResponse;
-import com.egs.hibernate.model.CountryResponse;
 import com.egs.hibernate.model.UserResponse;
 import com.egs.hibernate.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +36,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been successfully created")})
     @PostMapping
-    public void createUser(){
+    public void createUser() {
         userService.createUser();
     }
 

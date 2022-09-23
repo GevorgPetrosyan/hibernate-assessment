@@ -1,13 +1,11 @@
 package com.egs.hibernate.service.impl;
 
 import com.egs.hibernate.entity.Country;
-import com.egs.hibernate.model.CountryCodeResponse;
 import com.egs.hibernate.model.CountryResponseWith10K;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +38,7 @@ public class CountryServiceImpl implements CountryService {
         return entityManager.createQuery("SELECT new com.egs.hibernate.model.CountryResponseWith10K(c.countryCode) " + "FROM users u  " +
                 "JOIN u.addresses a " +
                 "JOIN a.country c " +
-                "GROUP BY c HAVING count(u) > 7500",
+                "GROUP BY c HAVING count(u) > 7600",
                 CountryResponseWith10K.class).getResultList();
     }
 
