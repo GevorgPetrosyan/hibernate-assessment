@@ -39,7 +39,7 @@ public class UserResource {
             @RequestParam(defaultValue = "1") Integer pageNo,
             @RequestParam(defaultValue = "200") Integer pageSize,
             @RequestParam(defaultValue = "username") String sortBy) {
-        Page<ResponseUser> list = userService.getByPages(pageNo, pageSize, sortBy);
+        Page<ResponseUser> list = userService.getAll(pageNo, pageSize, sortBy);
         return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
     }
 

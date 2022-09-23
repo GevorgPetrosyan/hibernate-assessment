@@ -11,11 +11,13 @@ import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.response.CountryCodeResponse;
 import com.egs.hibernate.response.ResponseUser;
 import com.egs.hibernate.service.UserService;
+import com.egs.hibernate.service.UserStoringService;
 import com.egs.hibernate.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -33,10 +35,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final UserStoringService userStoringService;
     private final Mapper mapper;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
         int i = userRepository.findFirstByOrderByIdDescCreatedDesc()
                 .map(User::getUsername)
@@ -61,7 +64,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<ResponseUser> getByPages(Integer pageNo, Integer pageSize, String sortBy) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Page<ResponseUser> getAll(Integer pageNo, Integer pageSize, String sortBy) {
         if (pageNo < 1) {
             return new PageImpl<>(Collections.emptyList());
         }
@@ -80,52 +84,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void createUser() {
-//        int i = userRepository.findFirstByOrderByIdDesc()
-//                .map(User::getUsername)
-//                .map(it -> it.split("_")[1])
-//                .map(Integer::valueOf)
-//                .map(it -> ++it)
-//                .orElse(0);
-
-//        int i = userRepository.findFirstByOrderByIdDesc()
-//                .map(User::getUsername)
-//                .map(it -> it.split("_")[1])
-//                .map(Integer::valueOf)
-//                .map(it -> ++it)
-//                .orElse(0);
-        // TODO Gurgen - fix this code
-        int i = -1;
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
+                .map(it -> it.split("_")[1])
+                .map(Integer::valueOf)
+                .map(it -> ++it)
+                .orElse(0);
 
         final String username1 = "username_" + i;
-        User user1 = saveUser(username1);
+
+        User user1 = constructUser(username1);
+        userStoringService.saveUser(user1);
         log.info("user : {} successfully created", user1.getId());
         final String username2 = "username_" + (i + 1);
         final User user2 = constructUser(username2);
         userRepository.save(user2);
-        throw new RuntimeException("Please help to save user1 !!!");
+        throw new RuntimeException("Please help to save user2 !!!");
     }
 
-    public User saveUser(String username) {
-        final User user = constructUser(username);
-        return userRepository.save(user);
-    }
-
-    @Override
-    public Page<ResponseUser> getAll(Integer pageNo, Integer pageSize, String sortBy) {
-        if (pageNo < 1) {
-            return new PageImpl<>(new ArrayList<>());
-        }
-        Pageable paging = PageRequest.of(pageNo - 1,
-                pageSize > 200 ? 200 : pageSize,
-                Sort.by(sortBy));
-
-        List<ResponseUser> pagedResult = userRepository.findAll(paging).stream()
-                .map(mapper::userToResponse)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(pagedResult);
-    }
 
     private static PhoneNumber constructPhoneNumber(User user) {
         return PhoneNumber.builder().phoneNumber(String.valueOf(ThreadLocalRandom.current().nextLong(100000000L, 999999999L)))

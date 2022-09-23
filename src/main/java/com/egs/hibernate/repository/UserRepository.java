@@ -13,6 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findFirstByOrderByIdDesc();
+
     Optional<User> findFirstByOrderByIdDescCreatedDesc();
 
     @Query(value = "SELECT u FROM users u JOIN FETCH u.phoneNumbers ph JOIN FETCH u.addresses a JOIN FETCH a.country c",

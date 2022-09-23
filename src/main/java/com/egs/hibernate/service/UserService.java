@@ -15,7 +15,5 @@ public interface UserService {
 
     Page<ResponseUser> getAll(Integer pageNo, Integer pageSize, String sortBy);
 
-    Page<ResponseUser> getByPages(Integer pageNo, Integer pageSize, String sortBy);
-
     List<CountryCodeResponse> getUsersCountByCountryCode();
 }

@@ -14,4 +14,5 @@ public interface CountryRepository extends CrudRepository<Country, Long> {
     @Query(value = "select c.countryCode as countryCode from users u " +
             "join u.addresses a join a.country c group by c having count(u) > 1")
     List<ResponseCountry> findCountriesByUsersCount();
+
 }

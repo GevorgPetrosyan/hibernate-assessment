@@ -1,5 +1,7 @@
 package com.egs.hibernate.rest;
 
+import com.egs.hibernate.entity.Country;
+import com.egs.hibernate.response.CountryCodeResponse;
 import com.egs.hibernate.response.ResponseCountry;
 import com.egs.hibernate.service.CountryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,10 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +37,10 @@ public class CountryResource {
     public ResponseEntity<List<ResponseCountry>> findCountries() {
         List<ResponseCountry> responseCountries = countryServiceImpl.getCountryByUserCount();
         return ResponseEntity.status(HttpStatus.OK).body(responseCountries);
-
     }
+//    @GetMapping("findCountryCode")
+//    @ApiResponse(responseCode = "200", description = "Countries successfully found")
+//    public void getCountryCodeByDisplayName(@RequestParam Country country) {
+//        countryServiceImpl.getCountryCodeByDisplayName(country);
+//    }
 }
