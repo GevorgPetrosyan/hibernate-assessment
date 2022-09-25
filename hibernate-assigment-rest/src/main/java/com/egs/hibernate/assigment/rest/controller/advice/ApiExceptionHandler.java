@@ -49,7 +49,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {EntityExistsException.class})
-    public ResponseEntity<ApiError> handleEntityExistsExceptionException(RuntimeException exception) {
+    public ResponseEntity<ApiError> handleEntityExistsException(RuntimeException exception) {
         logger.error(CONFLICT + " | message: " + exception.getMessage());
         return ResponseEntity.status(CONFLICT)
                 .body(new ApiError(CONFLICT, exception.getMessage(), Collections.emptyList()));
