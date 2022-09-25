@@ -10,14 +10,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/user/")
 @RequiredArgsConstructor
@@ -30,7 +35,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users have been successfully generated")})
     @PostMapping("generate/{count}")
-    public void initiateCountries(@PathVariable int count){
+    public void initiateCountries(@Valid @NotNull @PathVariable int count){
         userService.generateUsers(count);
     }
 
@@ -47,7 +52,7 @@ public class UserController {
             @ApiResponse(responseCode = "200")})
     @GetMapping("count/country/{validateCount}")
     public ResponseEntity<List<CountryCodesAndCountOfUsersResponse>> getUsersCountByCountryCode(
-            @PathVariable Long validateCount) {
+            @Valid @NotBlank @PathVariable Long validateCount) {
         return ResponseEntity.ok(userService.getUsersCountByCountryCode(validateCount));
     }
 
