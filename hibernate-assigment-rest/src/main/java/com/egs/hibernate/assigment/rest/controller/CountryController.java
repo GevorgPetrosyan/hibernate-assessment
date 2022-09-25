@@ -1,6 +1,7 @@
 package com.egs.hibernate.assigment.rest.controller;
 
 import com.egs.hibernate.assigment.core.service.CountryService;
+import com.egs.hibernate.assigment.data.transfer.response.CountryCodeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -37,5 +38,21 @@ public class CountryController {
             @ApiResponse(responseCode = "200")})
     public ResponseEntity<List<String>> countriesWhichUsers(@PathVariable Long validateCount) {
         return ResponseEntity.ok(countryService.getAllByUsersCount(validateCount));
+    }
+
+    @GetMapping("available/all")
+    @Operation(summary = "Get all by available country codes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")})
+    public ResponseEntity<List<CountryCodeResponse>> getAllByCountryCodes() {
+        return ResponseEntity.ok(countryService.getAllAvailableByCountryCodes());
+    }
+
+    @GetMapping("available/{displayName}")
+    @Operation(summary = "Get country code by the display name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")})
+    public ResponseEntity<CountryCodeResponse> getByDisplayName(@PathVariable String displayName) {
+        return ResponseEntity.ok(countryService.getByDisplayName(displayName));
     }
 }

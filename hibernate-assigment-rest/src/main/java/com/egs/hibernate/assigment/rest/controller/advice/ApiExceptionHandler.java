@@ -13,12 +13,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * This Component is responsible for handling exceptions and returning
@@ -47,9 +49,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {EntityExistsException.class})
-    public ResponseEntity<ApiError> handleFeignException(RuntimeException exception) {
+    public ResponseEntity<ApiError> handleEntityExistsExceptionException(RuntimeException exception) {
         logger.error(CONFLICT + " | message: " + exception.getMessage());
         return ResponseEntity.status(CONFLICT)
                 .body(new ApiError(CONFLICT, exception.getMessage(), Collections.emptyList()));
+    }
+
+    @ExceptionHandler(value = {EntityNotFoundException.class})
+    public ResponseEntity<ApiError> handleEntityNotFoundException(RuntimeException exception) {
+        logger.error(NOT_FOUND + " | message: " + exception.getMessage());
+        return ResponseEntity.status(NOT_FOUND)
+                .body(new ApiError(NOT_FOUND, exception.getMessage(), Collections.emptyList()));
     }
 }
