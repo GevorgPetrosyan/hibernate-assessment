@@ -14,8 +14,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query(value = "select username from users where id IN (select MAX(u1.id) FROM users AS u1)")
-    Optional<String> findUserByMaxID();
+    Optional<User> findFirstByOrderByIdDesc();
 
     List<User> findAll(Pageable pageable);
 

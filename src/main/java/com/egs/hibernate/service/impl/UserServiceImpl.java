@@ -37,7 +37,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateUsers(final int count) {
-        int i = userRepository.findUserByMaxID()
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
                 .map(it -> ++it)
@@ -61,7 +62,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void createUser() {
-        int i = userRepository.findUserByMaxID()
+        int i = userRepository.findFirstByOrderByIdDesc()
+                .map(User::getUsername)
                 .map(it -> it.split("_")[1])
                 .map(Integer::valueOf)
                 .map(it -> ++it)
