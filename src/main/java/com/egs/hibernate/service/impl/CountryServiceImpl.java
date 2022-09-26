@@ -46,6 +46,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional(readOnly = true)
     public List<CountryCode> getCountryCodes() {
+        log.info("GetCountryCodes method start work!");
         List<Country> countries = countryRepository.findAll();
         return countries.stream()
                 .map(country -> country.getCountryCode())
