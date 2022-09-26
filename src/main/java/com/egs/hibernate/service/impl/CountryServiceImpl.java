@@ -3,8 +3,10 @@ package com.egs.hibernate.service.impl;
 import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.BaseUser;
 import com.egs.hibernate.entity.Country;
+import com.egs.hibernate.mapper.CountryMapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.response.CountriesWithTenKUsersResponse;
+import com.egs.hibernate.response.CountryResponse;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class CountryServiceImpl implements CountryService {
 
     private final CountryRepository countryRepository;
     private final EntityManager entityManager;
+    private final CountryMapper countryMapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -46,6 +49,7 @@ public class CountryServiceImpl implements CountryService {
         Root<Address> addressRoot = query.from(Address.class);
         Root<BaseUser> userRoot = query.from(BaseUser.class);
         query.select(countryRoot.get("countryCode"));
+        query.distinct(true);
         query.where(
                 criteriaBuilder.and(
                         criteriaBuilder.equal(userRoot.get("id"), addressRoot.get("baseUser")),
@@ -58,4 +62,23 @@ public class CountryServiceImpl implements CountryService {
         List<CountryCode> resultList = entityManager.createQuery(query).getResultList();
         return new CountriesWithTenKUsersResponse(resultList);
     }
+
+    @Override
+    public CountryResponse getCountryCodeByDisplayName(String displayName) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Country> query = criteriaBuilder.createQuery(Country.class);
+        Root<Country> root = query.from(Country.class);
+        query.where(criteriaBuilder.equal(root.get("displayName"), displayName));
+        return countryMapper.toResponse(entityManager.createQuery(query).getSingleResult());
+    }
+
+    @Override
+    public List<CountryCode> getAllCountries() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CountryCode> query = criteriaBuilder.createQuery(CountryCode.class);
+        Root<Country> root = query.from(Country.class);
+        query.select(root.get("countryCode"));
+        return entityManager.createQuery(query).getResultList();
+    }
+
 }

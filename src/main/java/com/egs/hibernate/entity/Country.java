@@ -2,11 +2,9 @@ package com.egs.hibernate.entity;
 
 import com.neovisionaries.i18n.CountryCode;
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Entity(name = "country")
 @Getter
@@ -14,6 +12,8 @@ import javax.persistence.Enumerated;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Country extends BaseEntity {
 
     @Column(name = "display_name")
