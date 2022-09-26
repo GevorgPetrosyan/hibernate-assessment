@@ -12,4 +12,16 @@ public class Mapper {
                 .map(element -> mapper.map(element, targetClass))
                 .collect(Collectors.toList());
     }
+
+
+    public <E, D> D convertToDto(E entity, Class<D> dto) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(entity, dto);
+    }
+
+    public <E, D> E convertToEntity(D dto, Class<E> entity) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(dto, entity);
+    }
+
 }
