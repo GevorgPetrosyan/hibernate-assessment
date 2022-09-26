@@ -1,11 +1,13 @@
 package com.egs.hibernate.service;
 
+import com.neovisionaries.i18n.CountryCode;
+
 import java.util.List;
 
 public interface CountryService {
     void storeAllCountries();
 
-    String getCountryCodeByDisplayName(String displayName);
+    CountryCode getCountryCodeByDisplayName(String displayName);
 
-    List<String> getCountryCodes();
+    List<CountryCode> getCountryCodes();
 }

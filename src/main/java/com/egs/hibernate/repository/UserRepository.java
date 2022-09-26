@@ -2,6 +2,7 @@ package com.egs.hibernate.repository;
 
 import com.egs.hibernate.dto.UsersCountDTO;
 import com.egs.hibernate.entity.User;
+import com.neovisionaries.i18n.CountryCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -32,6 +33,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
             "JOIN country c ON c.id = a.country.id " +
             "GROUP BY c.countryCode " +
             "HAVING count(u.id) > 10000")
-    List<String> usersCluster();
+    List<CountryCode> usersCluster();
 
 }

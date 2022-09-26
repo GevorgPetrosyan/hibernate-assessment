@@ -33,22 +33,22 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(readOnly = true)
-    public String getCountryCodeByDisplayName(String displayName) {
+    public CountryCode getCountryCodeByDisplayName(String displayName) {
         log.info("GetCountryCod method start work!");
         Country country = countryRepository.findCountryByDisplayName(displayName);
         if (country == null) {
             log.error("Country with displayName: {} can't be gotten.", displayName);
             throw new CountryNotFoundException("CountryCode for " + displayName + " not found.");
         }
-        return country.getCountryCode().toString();
+        return country.getCountryCode();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getCountryCodes() {
+    public List<CountryCode> getCountryCodes() {
         List<Country> countries = countryRepository.findAll();
         return countries.stream()
-                .map(country -> country.getCountryCode().toString())
+                .map(country -> country.getCountryCode())
                 .collect(Collectors.toList());
     }
 }

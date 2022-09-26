@@ -13,6 +13,7 @@ import com.egs.hibernate.mapper.Mapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -84,13 +85,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UsersCountDTO> usersCountByCountryCode() {
         log.info("Users count by country code method start work!");
         return userRepository.usersCountByCountryCode();
     }
 
     @Override
-    public List<String> usersCluster() {
+    @Transactional(readOnly = true)
+    public List<CountryCode> usersCluster() {
         log.info("Country list by users cluster method start work!");
         return userRepository.usersCluster();
     }

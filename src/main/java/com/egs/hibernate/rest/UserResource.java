@@ -4,6 +4,7 @@ package com.egs.hibernate.rest;
 import com.egs.hibernate.dto.UserDTO;
 import com.egs.hibernate.dto.UsersCountDTO;
 import com.egs.hibernate.service.UserService;
+import com.neovisionaries.i18n.CountryCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -53,7 +54,7 @@ public class UserResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Counties list have been successfully shown")})
     @GetMapping("cluster")
-    public ResponseEntity<List<String>> usersCluster(){
+    public ResponseEntity<List<CountryCode>> usersCluster(){
         return ResponseEntity.ok(userService.usersCluster());
     }
 
