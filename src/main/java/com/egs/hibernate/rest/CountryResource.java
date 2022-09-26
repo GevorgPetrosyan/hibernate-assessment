@@ -35,7 +35,7 @@ public class CountryResource {
         return ResponseEntity.ok(countryCode);
     }
 
-    @GetMapping
+    @GetMapping("/codes")
     @Operation(summary = "Get country codes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Country codes successfully gotten")})
