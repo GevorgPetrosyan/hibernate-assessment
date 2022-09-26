@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
-    private final UserSaveService s;
+    private final UserSaveService saveUserService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
                 .map(it -> ++it)
                 .orElse(0);
         final String username1 = "username_" + i;
-        User user1 = s.saveUser(username1);
+        User user1 = saveUserService.saveUser(username1);
         log.info("user : {} successfully created", user1.getId());
         final String username2 = "username_" + (i + 1);
         final User user2 = constructUser(username2);
