@@ -49,7 +49,7 @@ public class CountryServiceImpl implements CountryService {
         log.info("GetCountryCodes method start work!");
         List<Country> countries = countryRepository.findAll();
         return countries.stream()
-                .map(country -> country.getCountryCode())
+                .map(Country::getCountryCode)
                 .collect(Collectors.toList());
     }
 }
