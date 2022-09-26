@@ -6,16 +6,17 @@ import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-import org.webjars.NotFoundException;
 
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,5 +44,13 @@ public class CountryServiceImpl implements CountryService {
             throw new CountryNotFoundException("Country not found.");
         }
         return country.getCountryCode().toString();
+    }
+
+    @Override
+    public List<String> getCountryCodes() {
+        List<Country> countries = countryRepository.findAll();
+        return countries.stream()
+                .map(country -> country.getCountryCode().toString())
+                .collect(Collectors.toList());
     }
 }

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/country/")
 @RequiredArgsConstructor
@@ -17,7 +19,6 @@ public class CountryResource {
     private final CountryService countryServiceImpl;
 
     @PostMapping("init")
-
     @Operation(summary = "Initialize countries")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Countries initialization is successfully done")})
@@ -26,12 +27,20 @@ public class CountryResource {
     }
 
     @GetMapping("/{displayname}")
-
     @Operation(summary = "Get country code")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Country code successfully get")})
-    public ResponseEntity<String> getCountry(@PathVariable("displayname") String displayName) {
+            @ApiResponse(responseCode = "200", description = "Country code successfully gotten")})
+    public ResponseEntity<String> getCountryCode(@PathVariable("displayname") String displayName) {
         String countryCode = countryServiceImpl.getCountryCodeByDisplayName(displayName);
         return ResponseEntity.ok(countryCode);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get country codes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Country codes successfully gotten")})
+    public ResponseEntity<List<String>> getCountryCodes() {
+        List<String> countryCodes = countryServiceImpl.getCountryCodes();
+        return ResponseEntity.ok(countryCodes);
     }
 }
