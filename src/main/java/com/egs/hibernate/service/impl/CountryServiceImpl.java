@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +36,7 @@ public class CountryServiceImpl implements CountryService {
     public String getCountryCodeByDisplayName(String displayName) {
         log.info("GetCountryCod method start work!");
         Country country = countryRepository.findCountryByDisplayName(displayName);
-        if (country == null){
+        if (country == null) {
             log.error("Country with displayName: {} can't be gotten.", displayName);
             throw new CountryNotFoundException("CountryCode for " + displayName + " not found.");
         }
@@ -47,6 +44,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<String> getCountryCodes() {
         List<Country> countries = countryRepository.findAll();
         return countries.stream()
