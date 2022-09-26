@@ -1,20 +1,28 @@
 package com.egs.hibernate.service.impl;
 
 import com.egs.hibernate.entity.Country;
+import com.egs.hibernate.exceptions.CountryNotFoundException;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.webjars.NotFoundException;
 
 import java.util.Arrays;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void storeAllCountries() {
@@ -23,5 +31,17 @@ public class CountryServiceImpl implements CountryService {
                     .map(it -> Country.builder().countryCode(it).displayName(it.getName()).build())
                     .forEach(countryRepository::save);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getCountryCodeByDisplayName(String displayName) {
+        log.info("GetCountryCod method start work!");
+        Country country = countryRepository.findCountryByDisplayName(displayName);
+        if (country == null){
+            log.error("Country with displayName: {} can't be gotten.", displayName);
+            throw new CountryNotFoundException("Country not found.");
+        }
+        return country.getCountryCode().toString();
     }
 }
