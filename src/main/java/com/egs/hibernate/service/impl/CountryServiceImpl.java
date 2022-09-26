@@ -41,7 +41,7 @@ public class CountryServiceImpl implements CountryService {
         Country country = countryRepository.findCountryByDisplayName(displayName);
         if (country == null){
             log.error("Country with displayName: {} can't be gotten.", displayName);
-            throw new CountryNotFoundException("Country not found.");
+            throw new CountryNotFoundException("CountryCode for " + displayName + " not found.");
         }
         return country.getCountryCode().toString();
     }
