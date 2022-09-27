@@ -23,4 +23,16 @@ public class ControllerAdvisor {
         return new ResponseEntity<>(exception, badRequest);
     }
 
+    @ExceptionHandler(value = {UserNotSavedException.class})
+    public ResponseEntity<Object> handleNotFoundException(UserNotSavedException e) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        ExceptionResponse exception = new ExceptionResponse(
+                e.getMessage(),
+                badRequest.value(),
+                badRequest,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(exception, badRequest);
+    }
+
 }
