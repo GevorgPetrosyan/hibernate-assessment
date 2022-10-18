@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,22 +33,20 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional(readOnly = true)
     public CountryCode getCountryCodeByDisplayName(String displayName) {
-        log.info("GetCountryCod method start work!");
-        Country country = countryRepository.findCountryByDisplayName(displayName);
-        if (country == null) {
+        log.info("Get Country Code method start work!");
+        CountryCode countryCode = countryRepository.findCountryCodeByDisplayName(displayName);
+        if (countryCode == null) {
             log.error("Country with displayName: {} can't be gotten.", displayName);
             throw new CountryNotFoundException("CountryCode for " + displayName + " not found.");
         }
-        return country.getCountryCode();
+        return countryCode;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CountryCode> getCountryCodes() {
-        log.info("GetCountryCodes method start work!");
-        List<Country> countries = countryRepository.findAll();
-        return countries.stream()
-                .map(Country::getCountryCode)
-                .collect(Collectors.toList());
+        @Override
+        @Transactional(readOnly = true)
+        public List<CountryCode> getCountryCodes() {
+            log.info("GetCountryCodes method start work!");
+            return countryRepository.getAllCountryCodes();
+        }
     }
-}
+

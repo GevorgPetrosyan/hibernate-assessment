@@ -9,10 +9,11 @@ import com.egs.hibernate.entity.Address;
 import com.egs.hibernate.entity.Country;
 import com.egs.hibernate.entity.PhoneNumber;
 import com.egs.hibernate.entity.User;
+import com.egs.hibernate.exceptions.UserNotSavedException;
 import com.egs.hibernate.mapper.Mapper;
 import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.repository.UserRepository;
-import com.egs.hibernate.service.UserSaveService;
+import com.egs.hibernate.service.TransactionsExecutor;
 import com.egs.hibernate.service.UserService;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,7 +36,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
-    private final UserSaveService saveUserService;
+    private final TransactionsExecutor executor;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -70,12 +73,12 @@ public class UserServiceImpl implements UserService {
                 .map(it -> ++it)
                 .orElse(0);
         final String username1 = "username_" + i;
-        User user1 = saveUserService.saveUser(username1);
+         User user1 = executor.saveUser(username1);
         log.info("user : {} successfully created", user1.getId());
         final String username2 = "username_" + (i + 1);
         final User user2 = constructUser(username2);
         userRepository.save(user2);
-        throw new RuntimeException("User2 dont saved !!!");
+        throw new UserNotSavedException("User2 dont saved !!!");
     }
 
     @Override

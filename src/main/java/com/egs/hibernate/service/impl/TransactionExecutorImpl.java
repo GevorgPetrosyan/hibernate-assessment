@@ -4,7 +4,7 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomPerson;
 import com.egs.hibernate.entity.User;
 import com.egs.hibernate.repository.UserRepository;
-import com.egs.hibernate.service.UserSaveService;
+import com.egs.hibernate.service.TransactionsExecutor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserSaveServiceImpl implements UserSaveService {
+public class TransactionExecutorImpl implements TransactionsExecutor {
 
     private final UserRepository userRepository;
 
