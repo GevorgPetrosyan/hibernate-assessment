@@ -1,5 +1,7 @@
 package com.egs.hibernate.rest;
 
+import com.egs.hibernate.entity.Country;
+import com.egs.hibernate.repository.CountryRepository;
 import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,21 +9,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/api/v1/country/")
+@RequestMapping("/api/v1/country")
 @RequiredArgsConstructor
 @Tag(name = "Country Resource", description = "The Country API with documentation annotations")
 public class CountryResource {
     private final CountryService countryServiceImpl;
+    private final CountryRepository repository;
 
-    @PostMapping("init")
+    @PostMapping("/init")
     @Operation(summary = "Initialize countries")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Countries initialization is successfully done")})
@@ -44,5 +45,10 @@ public class CountryResource {
             @ApiResponse(responseCode = "200", description = "Country codes successfully gotten")})
     public ResponseEntity<List<CountryCode>> getCountryCodes() {
         return ResponseEntity.ok(countryServiceImpl.getCountryCodes());
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Country>> getCountry() {
+        return ResponseEntity.ok(repository.findAll());
     }
 }
