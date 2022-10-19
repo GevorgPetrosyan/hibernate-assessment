@@ -2,9 +2,6 @@ package com.egs.hibernate.entity;
 
 import com.neovisionaries.i18n.CountryCode;
 import lombok.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 
