@@ -15,6 +15,4 @@ public class CachingConfig {
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager("countryCode");
     }
-
-
 }

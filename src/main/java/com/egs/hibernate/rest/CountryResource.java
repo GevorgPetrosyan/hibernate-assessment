@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Tag(name = "Country Resource", description = "The Country API with documentation annotations")
 public class CountryResource {
     private final CountryService countryServiceImpl;
+    // todo delete after 2d level cache test
     private final CountryRepository repository;
 
     @PostMapping("/init")
@@ -47,8 +49,17 @@ public class CountryResource {
         return ResponseEntity.ok(countryServiceImpl.getCountryCodes());
     }
 
+    // todo delete
+    //  method for test query level cache
     @GetMapping("/all")
     public ResponseEntity<List<Country>> getCountry() {
         return ResponseEntity.ok(repository.findAll());
+    }
+
+    // todo delete
+    //  method for test 2d level cache
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Country> getCityById(@PathVariable(name = "id") Long id){
+        return new ResponseEntity(repository.findById(id), HttpStatus.OK);
     }
 }
