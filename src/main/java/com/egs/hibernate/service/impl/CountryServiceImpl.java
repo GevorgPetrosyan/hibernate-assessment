@@ -19,7 +19,6 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Cacheable(value = "countryCode")
 public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
 
@@ -35,6 +34,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "countryCode")
     public CountryCode getCountryCodeByDisplayName(String displayName) {
         log.info("Get Country Code method start work!");
         CountryCode countryCode = countryRepository.findCountryCodeByDisplayName(displayName);
@@ -47,6 +47,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "countryCode")
     public List<CountryCode> getCountryCodes() {
         log.info("GetCountryCodes method start work!");
         return countryRepository.getAllCountryCodes();
