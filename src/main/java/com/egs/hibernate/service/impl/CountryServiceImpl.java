@@ -7,6 +7,7 @@ import com.egs.hibernate.service.CountryService;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "countryCode")
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
@@ -34,7 +36,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "countryCode")
+    @Cacheable
     public CountryCode getCountryCodeByDisplayName(String displayName) {
         log.info("Get Country Code method start work!");
         CountryCode countryCode = countryRepository.findCountryCodeByDisplayName(displayName);
@@ -47,7 +49,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "countryCodes")
+    @Cacheable
     public List<CountryCode> getCountryCodes() {
         log.info("GetCountryCodes method start work!");
         return countryRepository.getAllCountryCodes();
