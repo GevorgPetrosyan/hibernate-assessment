@@ -13,6 +13,6 @@ public class CachingConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("countryCode");
+        return new ConcurrentMapCacheManager("countryCode", "countryCodes");
     }
 }

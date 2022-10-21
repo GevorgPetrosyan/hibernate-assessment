@@ -47,7 +47,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "countryCode")
+    @Cacheable(cacheNames = "countryCodes")
     public List<CountryCode> getCountryCodes() {
         log.info("GetCountryCodes method start work!");
         return countryRepository.getAllCountryCodes();
