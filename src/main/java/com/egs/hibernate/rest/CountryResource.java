@@ -21,8 +21,6 @@ import java.util.List;
 @Tag(name = "Country Resource", description = "The Country API with documentation annotations")
 public class CountryResource {
     private final CountryService countryServiceImpl;
-    // todo delete after 2d level cache test
-    private final CountryRepository repository;
 
     @PostMapping("/init")
     @Operation(summary = "Initialize countries")
@@ -37,6 +35,7 @@ public class CountryResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Country code successfully gotten")})
     public ResponseEntity<CountryCode> getCountryCode(@PathVariable("displayname") String displayName) {
+
         CountryCode countryCode = countryServiceImpl.getCountryCodeByDisplayName(displayName);
         return ResponseEntity.ok(countryCode);
     }
@@ -49,7 +48,7 @@ public class CountryResource {
         return ResponseEntity.ok(countryServiceImpl.getCountryCodes());
     }
 
-    @GetMapping("/update")
+    @GetMapping("/get/update")
     @Operation(summary = "Get updated country codes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Country codes successfully updated and gotten")})
@@ -60,14 +59,19 @@ public class CountryResource {
     // todo delete
     //  method for test query level cache
     @GetMapping("/all")
-    public ResponseEntity<List<Country>> getCountry() {
-        return ResponseEntity.ok(repository.findAll());
+    public ResponseEntity<List<Country>> getCountries() {
+        return ResponseEntity.ok(countryServiceImpl.getAllCountries());
     }
 
     // todo delete
     //  method for test 2d level cache
     @GetMapping("/get/{id}")
     public ResponseEntity<Country> getCityById(@PathVariable(name = "id") Long id){
-        return new ResponseEntity(repository.findById(id), HttpStatus.OK);
+        return new ResponseEntity(countryServiceImpl.getCountryById(id), HttpStatus.OK);
+    }
+    @GetMapping("/get/manual")
+    public ResponseEntity<String> getCacheName(){
+        countryServiceImpl.getManualData();
+        return new ResponseEntity("test", HttpStatus.OK);
     }
 }
