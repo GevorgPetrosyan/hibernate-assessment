@@ -49,6 +49,14 @@ public class CountryResource {
         return ResponseEntity.ok(countryServiceImpl.getCountryCodes());
     }
 
+    @GetMapping("/update")
+    @Operation(summary = "Get updated country codes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Country codes successfully updated and gotten")})
+    public ResponseEntity<List<CountryCode>> updateCountryCodes() {
+        return ResponseEntity.ok(countryServiceImpl.updateCountryCodesInCache());
+    }
+
     // todo delete
     //  method for test query level cache
     @GetMapping("/all")

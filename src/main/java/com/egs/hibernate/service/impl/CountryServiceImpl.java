@@ -8,6 +8,7 @@ import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,6 +52,13 @@ public class CountryServiceImpl implements CountryService {
     @Transactional(readOnly = true)
     @Cacheable
     public List<CountryCode> getCountryCodes() {
+        log.info("GetCountryCodes method start work!");
+        return countryRepository.getAllCountryCodes();
+    }
+
+    @Override
+    @CachePut
+    public List<CountryCode> updateCountryCodesInCache() {
         log.info("GetCountryCodes method start work!");
         return countryRepository.getAllCountryCodes();
     }

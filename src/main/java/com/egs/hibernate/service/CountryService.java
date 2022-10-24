@@ -11,4 +11,6 @@ public interface CountryService {
     CountryCode getCountryCodeByDisplayName(String displayName);
 
     List<CountryCode> getCountryCodes();
+
+    List<CountryCode> updateCountryCodesInCache();
 }
