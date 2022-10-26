@@ -17,5 +17,4 @@ public interface CountryRepository extends CrudRepository<Country, Long> {
     @Query(value = "SELECT countryCode FROM country")
     List<CountryCode> getAllCountryCodes();
 
-    List<Country> findAll();
 }
