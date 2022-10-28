@@ -31,9 +31,9 @@ public class CountryResource {
     @Operation(summary = "Get country code")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Country code successfully gotten")})
-    public ResponseEntity<CountryCode> getCountryCode(@PathVariable("displayname") String displayName) {
+    public ResponseEntity<List<CountryCode>> getCountryCode(@PathVariable("displayname") String displayName) {
 
-        CountryCode countryCode = countryServiceImpl.getCountryCodeByDisplayName(displayName);
+        List<CountryCode> countryCode = countryServiceImpl.getCountryCodeByDisplayName(displayName);
         return ResponseEntity.ok(countryCode);
     }
 

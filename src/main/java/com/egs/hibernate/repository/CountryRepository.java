@@ -12,9 +12,8 @@ import java.util.List;
 public interface CountryRepository extends CrudRepository<Country, Long> {
 
     @Query(value = "SELECT countryCode FROM country WHERE displayName = ?1")
-    CountryCode findCountryCodeByDisplayName(String displayName);
+    List<CountryCode> findCountryCodeByDisplayName(String displayName);
 
     @Query(value = "SELECT countryCode FROM country")
     List<CountryCode> getAllCountryCodes();
-
 }

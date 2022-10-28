@@ -8,7 +8,7 @@ public interface CountryService {
 
     void storeAllCountries();
 
-    CountryCode getCountryCodeByDisplayName(String displayName);
+    List<CountryCode> getCountryCodeByDisplayName(String displayName);
 
     List<CountryCode> getCountryCodes();
 }

@@ -11,6 +11,8 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "idx_tbl_country_display_name", columnList = "display_name")})
 public class Country extends BaseEntity {
 
     @Column(name = "display_name")

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-
 @Slf4j
 @Service
 @CacheConfig(cacheNames = "countryCode")
@@ -39,14 +38,14 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable
-    public CountryCode getCountryCodeByDisplayName(String displayName) {
+    public List<CountryCode> getCountryCodeByDisplayName(String displayName) {
         log.info("Get Country Code method start work!");
-        CountryCode countryCode = countryRepository.findCountryCodeByDisplayName(displayName);
-        if (countryCode == null) {
-            log.error("Country with displayName: {} can't be gotten.", displayName);
-            throw new CountryNotFoundException("CountryCode for " + displayName + " not found.");
+        List<CountryCode> countryCodes = countryRepository.findCountryCodeByDisplayName(displayName);
+        if (countryCodes.isEmpty()) {
+            log.error("Country codes with displayName: {} can't be gotten.", displayName);
+            throw new CountryNotFoundException("CountryCode(s) for " + displayName + " not found.");
         }
-        return countryCode;
+        return countryCodes;
     }
 
     @Override
